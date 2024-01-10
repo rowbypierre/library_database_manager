@@ -10,13 +10,15 @@ while status == "locked":
     uthreshold += 1
     
     if uthreshold == 9:
-        print("Last attempt before script terminates.")
+        print("""
+Last attempt before script terminates.""")
     elif (uthreshold == 10) and (username != "test"):
-        print("Terminating script...")
+        print("""
+Terminating script...""")
         sys.exit()
     elif username == "test":
-        prompt = f"Welcome {username}"
-        print(prompt.lower())
+        print(f"""
+Welcome {username}""")
         
         while status == "locked":
             
@@ -24,15 +26,39 @@ while status == "locked":
             pthreshold += 1
             
             if (pthreshold == 9):
-                print("Last attempt before script terminates.")
+                print("""
+Last attempt before script terminates.""")
             elif pthreshold == 10 and (password != "password"):
-                print("Terminating script...")
+                print("""
+Terminating script...""")
                 sys.exit()
             elif password == "password":
-                prompt = f"Correct password entered for username: {username}"
+                prompt = f"""
+Correct password entered for username: {username}"""
+                print(prompt)
                 status = "unlocked"
-                
-print("REST OF THE CODE")
 
+print(
+"""
+Library Database Management System Utility
+    
+Operations include:
+    1. Query table
+    2. Update records   
+"""
+)
 
+operation = input("Enter operation: ")
 
+if operation.isdigit() == False:
+    print("""
+Enter numeric value 1 or 2""")
+elif operation > 2 or operation < 1:
+    print("""
+Select between Option 1 (Query Table) or Option 2 (Update record)""")
+elif operation == 1:
+    print("""
+You've 1. Query table""")
+elif operation == 2:
+    print("""
+2. Update records""")
