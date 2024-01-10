@@ -53,12 +53,12 @@ operation = input("Enter operation: ")
 if operation.isdigit() == False:
     print("""
 Enter numeric value 1 or 2""")
-elif operation > 2 or operation < 1:
+elif int(operation) > 2 or int(operation) < 1:
     print("""
 Select between Option 1 (Query Table) or Option 2 (Update record)""")
-elif operation == 1:
+elif int(operation) == 1:
     print("""
 You've 1. Query table""")
-elif operation == 2:
+elif int(operation) == 2:
     print("""
 2. Update records""")
