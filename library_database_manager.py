@@ -69,7 +69,8 @@ Operations include:
     2. Update record(s)
     3. Insert record(s)
     4. Delete record(s)""")
-
+    
+    print("")
     operation = input("Enter operation: ")
         
     if operation.isdigit() == False:
@@ -102,6 +103,7 @@ Operations include:
                 operation = input("Enter selection: ")
                 
                 if operation.isdigit() == True and int(operation) == 1:
+                    
                     query = ''' select 		title as "Book Title",
 			                                fname as "Author First Name",
 			                                lname as "Author Last Name",
@@ -119,13 +121,18 @@ Operations include:
                     
                     print("")
                     print("Printing database result...")
-                    print(resultset)
+                    print("")
+                    print("Book Title, Author First Name, Author Last Name, Author MI")                    
+                    for row in resultset:
+                        print(row)
+                
                     
                     print("")
                     print("Closing connection...")
                     cur.close()
                     
-                
+                    operation = "character"
+                    
             elif int(operation) == 2:
                 print("")
                 print("You've selected 2. Update record(s)")
