@@ -1,4 +1,5 @@
-import psycopg2 # library work with Postgresql DB
+# library work with Postgresql DB
+import psycopg2 
 # config function from created (local) config module
 from config import config
 
