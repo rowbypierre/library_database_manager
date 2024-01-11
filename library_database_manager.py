@@ -11,14 +11,14 @@ def logon():
         uthreshold += 1
     
         if uthreshold == 9:
-            print (" ")
+            print("")
             print("Last attempt before script terminates.")
         elif (uthreshold == 10) and (username != "test"):
-            print (" ")
+            print("")
             print("Terminating script...")
             sys.exit()
         elif username == "test":
-            print (" ")
+            print("")
             print(f"Welcome {username}")
         
             while status == "locked":
@@ -27,14 +27,14 @@ def logon():
                 pthreshold += 1
             
                 if (pthreshold == 9):
-                    print (" ")
+                    print("")
                     print("Last attempt before script terminates.")
                 elif pthreshold == 10 and (password != "password"):
-                    print (" ")
+                    print("")
                     print("Terminating script...")
                     sys.exit()
                 elif password == "password":
-                    print (" ")
+                    print("")
                     print(f"Correct password entered for username: {username}")
                     status = "unlocked"
 
@@ -51,25 +51,40 @@ Operations include:
     4. Delete record(s)""")
 
     operation = input("Enter operation: ")
-
+        
     if operation.isdigit() == False:
-        print (" ")
+        print("")
         print("Enter numeric value 1 or 2")
-    elif int(operation) > 4 or int(operation) < 1:
-        print (" ")
-        print("Select between Option 1 (Query Table) or Option 2 (Update record)")
-    elif int(operation) == 1:
-        print (" ")
-        print("You've selected 1. Query table")
-    elif int(operation) == 2:
-        print (" ")
-        print("You've selected 2. Update record(s)")
-    elif int(operation) == 3:
-        print (" ")
-        print("You've selected 3. Insert record(s)")
-    elif int(operation) == 4:
-        print (" ")
-        print("You've selected 2. Delete record(s)")
+    else:
+        while operation.isdigit() == True:
+            
+            if int(operation) > 4 or int(operation) < 1:
+                print("")
+                print("Select between Option 1 (Query Table) or Option 2 (Update record)")
+            elif int(operation) == 1:
+                print("")
+                print("You've selected 1. Query table")
+                
+                print("")
+                print("Select from query options below: ")
+                print("")
+                print("1. Library catalog ")
+                print("2. Catalog physical condition ")
+                print("3. Available books: ")
+                print("4. Shelf warmers: ")
+                print("5. Book checkout durations ")
+                print("6. Overdue returns ")
+                print("7. Book fines summary ")
+
+            elif int(operation) == 2:
+                print("")
+                print("You've selected 2. Update record(s)")
+            elif int(operation) == 3:
+                print("")
+                print("You've selected 3. Insert record(s)")
+            elif int(operation) == 4:
+                print("")
+                print("You've selected 4. Delete record(s)")
 
 
 
