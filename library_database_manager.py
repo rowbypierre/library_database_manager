@@ -27,9 +27,9 @@ Library Database Management System Utility
     
 Operations include:
     1. Query table
-    2. Update record(s)
-    3. Insert record(s)
-    4. Delete record(s)
+    2. Update record
+    3. Insert record
+    4. Delete record
     
     Enter 'exit' to exit utility""")
     
@@ -38,14 +38,17 @@ Operations include:
     if operation == "exit":
         print("")
         print("Exiting...")
+        cur.close()
         sys.exit()      
     
     elif operation.isdigit() == False:
         print("")
-        print("Enter numeric value 1, 2, 3, or 4") 
+        print("Numeric value 1, 2, 3, or 4 not entered") 
         print("")
         print("Closing connection...")
         cur.close()
+        print("")
+        print("Exiting...")
     
     else:
         while operation.isdigit() == True:
@@ -323,6 +326,72 @@ Operations include:
             elif int(operation) == 2:
                 print("")
                 print("You've selected 2. Update record(s)")
+                print("")
+                print("Select source table:")
+                print("")
+                print("1.   Books")
+                print("2.   Genres")
+                print("3.   Conditions")
+                print("4.   Statuses")
+                print("5.   Authors")
+                print("6.   Patrons")
+                print("7.   Loans")
+                print("8.   Returns")
+                print("9.   Checkouts")
+                print("10.  Staff")
+                print("11.  Roles")
+                
+                
+                uoperation = input("Enter selection: ")
+                if uoperation == "exit":
+                    print("")
+                    print("Exiting...")
+                    qoperation = "character"  
+                    cur.close()
+                    sys.exit() 
+                                                              
+                elif uoperation.isdigit() == True and int(uoperation) == 1:
+                    print("")
+                    print("Querying database...")
+                    query = "select id, title, genre_id, isbn, status_id, condition_id from books; "
+                    cur.execute(query)
+                    resultset = cur.fetchall()
+                    print("")
+                    print("(id, title, genre_id, ibsn, status_id, condition_id, created_staff_id, created, modified_staff_id, modified)")
+                    for row in resultset:
+                        print(row)
+                        
+                    print("")
+                    print("Select primary key of record to be updated ")
+                    print("")
+                    pkey = input("Enter primary key: ")
+                    if pkey == "exit":
+                        print("")
+                        print("Exiting...")
+                        qoperation = "character"  
+                        cur.close()
+                        sys.exit() 
+                                                              
+                    elif pkey.isdigit() == True and int(pkey) > 0:
+                        print("")
+                        field = input("Select field to upate: ")
+                        print("")
+                        newValue = input ("Enter new value for field: ") 
+                        
+                        query ='''
+                                update table books
+                                set {} = {}
+                                where id = {};'''
+                        query = query.format(field, newValue, pkey)
+                        print("")
+                        print(query)
+                        print("")
+                        print("Exiting...")
+                        qoperation = "character"  
+                        cur.close()
+                        sys.exit()       
+                    
+                        
             elif int(operation) == 3:
                 print("")
                 print("You've selected 3. Insert record(s)")
