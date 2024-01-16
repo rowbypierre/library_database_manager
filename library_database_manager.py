@@ -1,4 +1,5 @@
 import psycopg2
+import sys
 from config import config
 from login import logon
 
@@ -28,24 +29,49 @@ Operations include:
     1. Query table
     2. Update record(s)
     3. Insert record(s)
-    4. Delete record(s)""")
+    4. Delete record(s)
+    
+    Enter 'exit' to exit utility""")
     
     print("")
     operation = input("Enter operation: ")
-        
-    if operation.isdigit() == False:
+    if operation == "exit":
         print("")
-        print("Enter numeric value 1, 2, 3, or 4")
-        
+        print("Exiting...")
+        sys.exit()      
+    
+    elif operation.isdigit() == False:
+        print("")
+        print("Enter numeric value 1, 2, 3, or 4") 
         print("")
         print("Closing connection...")
         cur.close()
+    
     else:
         while operation.isdigit() == True:
             
             if int(operation) > 4 or int(operation) < 1:
                 print("")
-                print("Select between Option 1 (Query Table) or Option 2 (Update record)")
+                print("Select between:")
+                print("Option 1     (Query Table)")
+                print("or Option 2  (Update record)")
+                print("or Option 3  (Insert Record)")
+                print("or Option 4  (Delete recod)")
+                
+                operation = input("Enter operation: ")
+                if operation == "exit":
+                    print("")
+                    print("Exiting...")
+                    operation = "character"  
+                    cur.close()
+                    sys.exit()                       
+                elif operation.isdigit() == False:
+                    print("")
+                    print("Enter numeric value 1, 2, 3, or 4") 
+                    print("")
+                    print("Closing connection...")
+                    cur.close()
+                
             elif int(operation) == 1:
                 print("")
                 print("You've selected 1. Query table")
@@ -61,9 +87,14 @@ Operations include:
                 print("")
                 
                 qoperation = input("Enter selection: ")
-                
-                if qoperation.isdigit() == True and int(qoperation) == 1:
-                    
+                if qoperation == "exit":
+                    print("")
+                    print("Exiting...")
+                    qoperation = "character"  
+                    cur.close()
+                    sys.exit() 
+                                                              
+                elif qoperation.isdigit() == True and int(qoperation) == 1:                    
                     query = ''' 
                             select 		title "Title", isbn "ISBN", genre "Genre", condition "Condition"
                             from        books b
@@ -82,16 +113,13 @@ Operations include:
                     print('(Title, ISBN, Genre, Book Condition)')                    
                     for row in resultset:
                         print(row)
-                
-                    
+                                  
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()                  
                     operation = "character"
                 
-                elif qoperation.isdigit() == True and int(qoperation) == 2:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 2:                    
                     query = ''' 
                             select      condition "Condition",			
                                         count(*) "Count",			
@@ -115,12 +143,10 @@ Operations include:
                     
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()  
                     operation = "character"
                     
-                elif qoperation.isdigit() == True and int(qoperation) == 3:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 3:                    
                     query = ''' 
                             select 		--*,
 						                title as "Book Title",
@@ -147,12 +173,10 @@ Operations include:
                 
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()                   
                     operation = "character"
                     
-                elif qoperation.isdigit() == True and int(qoperation) == 4:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 4:                    
                     query = ''' 
                             select 		--*,
 			                            title as "Book Title",
@@ -179,12 +203,10 @@ Operations include:
                 
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()                   
                     operation = "character"
                     
-                elif qoperation.isdigit() == True and int(qoperation) == 5:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 5:       
                     query = ''' 
                             with x as (
 	                            select		*,
@@ -220,12 +242,10 @@ Operations include:
                 
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()                   
                     operation = "character"
                     
-                elif qoperation.isdigit() == True and int(qoperation) == 6:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 6:                   
                     query = ''' 
                             with x as ( 
 	                            select 	concat(p.fname, ' ', p.lname) as "Patron",
@@ -260,12 +280,10 @@ Operations include:
                 
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
+                    cur.close()                    
                     operation = "character"
                     
-                elif qoperation.isdigit() == True and int(qoperation) == 7:
-                    
+                elif qoperation.isdigit() == True and int(qoperation) == 7:                  
                     query = ''' 
                             with x as ( 
 	                            select 	*,
@@ -296,12 +314,12 @@ Operations include:
                 
                     print("")
                     print("Closing connection...")
-                    cur.close()
-                    
-                    operation = "character"
-                    
+                    cur.close()                    
+                    operation = "character"                
                 
-                    
+                else:                    
+                    print("Enter numeric value between 1 - 7")
+                                            
             elif int(operation) == 2:
                 print("")
                 print("You've selected 2. Update record(s)")
