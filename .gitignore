@@ -1,2 +1,4 @@
 #database configuration file, local host
 database.ini
+#throwaway file
+scrap.py
