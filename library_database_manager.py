@@ -421,14 +421,11 @@ Operations include:
                                 set {} = {}
                                 where id = {};"""
                         query = query.format(uoperation,field, newValue, pkey)
+                        cur.execute(query)
                         print("")
                         print("Updating record...")
                         print("")
-                        cur.execute(query)
-                        resultset = cur.fetchone() #there is no result to fetch 
-                        # might have to look into placing a commit statement here
-                        print("")
-                        print(f"Database message: {resultset}")
+                        # print(f"Database message: {resultset}")
                         print("Querying updated record...")
                         query = f"""select * from {uoperation} where id = {pkey};"""
                         cur.execute(query)
