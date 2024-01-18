@@ -383,7 +383,7 @@ Operations include:
                         print(row)
                         
                     print("")
-                    print("Select primary key of record to be updated ")
+                    print("Select primary key of record to be updated.")
                     print("")
                     pkey = input("Enter primary key: ")
                     if pkey == "exit":
@@ -395,26 +395,48 @@ Operations include:
                                                               
                     elif pkey.isdigit() == True and int(pkey) > 0:
                         print("")
-                        field = input("Select field to upate: ")
+                        print(f"Querying database, retrieving {uoperation} layout")
+                        print("Printing: field, datatype")
+                        query = f"""
+                        select 	column_name, data_type
+                        from 	information_schema.columns
+                        where 	table_name = '{uoperation}';
+                        """
+                        cur.execute(query)
+                        resultset = cur.fetchall()
+                        for column in resultset:
+                            print(column)
+                        print("")
+                        print("Non-numeric values MUST be enclosed with single quotations.")
+                        print("Use 'YYYY-MM-DD' for fields with date datatype.")
+                        
+                        print("")
+                        field = input("Select field to update: ")
                         field = field.strip().lower()
                         print("")
                         newValue = input("Enter new value for field: ")
                         newValue =  newValue.strip()
-                        
                         query ="""
-                                update table {}
-                                set {} = '{}'
+                                update {}
+                                set {} = {}
                                 where id = {};"""
                         query = query.format(uoperation,field, newValue, pkey)
-                        
                         print("")
                         print("Updating record...")
                         print("")
+                        cur.execute(query)
+                        resultset = cur.fetchone() #there is no result to fetch 
+                        # might have to look into placing a commit statement here
+                        print("")
+                        print(f"Database message: {resultset}")
                         print("Querying updated record...")
+                        query = f"""select * from {uoperation} where id = {pkey};"""
+                        cur.execute(query)
+                        resultset = cur.fetchone()
                         print("")
                         print("Printing updated record...")           
                         print("")
-                        print(query)
+                        print(resultset)
                         print("")
                         print("Exiting...")
                         print("")
