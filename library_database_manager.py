@@ -325,39 +325,60 @@ Operations include:
                                             
             elif int(operation) == 2:
                 print("")
-                print("You've selected 2. Update record(s)")
+                print("You've selected 2. Update record")
                 print("")
                 print("Select source table:")
+                query ="""
+                select  --*,
+                        table_name
+                from    information_schema.tables
+                where   table_catalog = 'library'
+                        and table_schema = 'public';
+                """
                 print("")
-                print("1.   Books")
-                print("2.   Genres")
-                print("3.   Conditions")
-                print("4.   Statuses")
-                print("5.   Authors")
-                print("6.   Patrons")
-                print("7.   Loans")
-                print("8.   Returns")
-                print("9.   Checkouts")
-                print("10.  Staff")
-                print("11.  Roles")
+                print("Quering database...")
+                cur.execute(query)
+                resultset = cur.fetchall()
+                tables = []                    
+                for row in resultset:
+                    rowx = ''.join(row)
+                    rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                    tables.append(rowx)
                 
+                print("")
+                print("Printing database tables...")
+                print("")
+                for table in tables:
+                    print(table)
                 
-                uoperation = input("Enter selection: ")
+                print("") 
+                uoperation = input("Enter table: ")
                 if uoperation == "exit":
                     print("")
                     print("Exiting...")
+                    print("")
+                    print("Closing connection...")
                     qoperation = "character"  
                     cur.close()
                     sys.exit() 
                                                               
-                elif uoperation.isdigit() == True and int(uoperation) == 1:
+                elif uoperation.isdigit() == False and uoperation.lower() in tables:
                     print("")
                     print("Querying database...")
-                    query = "select id, title, genre_id, isbn, status_id, condition_id from books; "
+                    query = """
+                    select  string_agg(column_name, ' ,') as column_string
+                    from 	information_schema.columns
+                    where 	table_name = '{}';
+                    """.format(uoperation.lower())
                     cur.execute(query)
-                    resultset = cur.fetchall()
+                    resultset1 = cur.fetchall()
+                        
+                    query = "select * from {}; ".format(uoperation.lower())
+                    cur.execute(query)
+                    resultset2 = cur.fetchall()
+                    resultset = resultset1 + resultset2
                     print("")
-                    print("(id, title, genre_id, ibsn, status_id, condition_id, created_staff_id, created, modified_staff_id, modified)")
+                    print("Printing table records...")
                     for row in resultset:
                         print(row)
                         
@@ -375,18 +396,29 @@ Operations include:
                     elif pkey.isdigit() == True and int(pkey) > 0:
                         print("")
                         field = input("Select field to upate: ")
+                        field = field.strip().lower()
                         print("")
-                        newValue = input ("Enter new value for field: ") 
+                        newValue = input("Enter new value for field: ")
+                        newValue =  newValue.strip()
                         
-                        query ='''
-                                update table books
-                                set {} = {}
-                                where id = {};'''
-                        query = query.format(field, newValue, pkey)
+                        query ="""
+                                update table {}
+                                set {} = '{}'
+                                where id = {};"""
+                        query = query.format(uoperation,field, newValue, pkey)
+                        
+                        print("")
+                        print("Updating record...")
+                        print("")
+                        print("Querying updated record...")
+                        print("")
+                        print("Printing updated record...")           
                         print("")
                         print(query)
                         print("")
                         print("Exiting...")
+                        print("")
+                        print("Closing connection...")
                         qoperation = "character"  
                         cur.close()
                         sys.exit()       
