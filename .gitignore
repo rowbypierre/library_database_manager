@@ -2,3 +2,4 @@
 database.ini
 #throwaway file
 scrap.py
+__pycache__/
