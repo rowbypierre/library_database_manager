@@ -408,6 +408,7 @@ Operations include:
                         sys.exit() 
                                                               
                     elif pkey.isdigit() == True and int(pkey) > 0:
+                        pkey = int(pkey)
                         print("")
                         print(f"Querying database, retrieving {uoperation} layout")
                         print("Printing: field, datatype")
@@ -427,12 +428,33 @@ Operations include:
                         print("")
                         field = input("Select field to update: ")
                         field = field.strip().lower()
+                        
+                        intFields = []
+                        query = """
+                                select distinct 	column_name --, data_type 
+                                from 				information_schema."columns"
+                                where 				table_catalog = 'library'
+                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'interger')
+                                                    and table_name not like '%pg%'     
+                        """
+                        cur.execute(query)
+                        resultset = cur.fetchall()
+                        for fields in resultset:
+                            fieldx = ''.join(field)
+                            fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                            intFields.append(rowx)
+                            
                         print("")
                         newValue = input("Enter new value for field: ")
-                        newValue =  newValue.strip()
+                        if field not in intFields:
+                           newValue =  newValue.strip().replace("'", "''")
+                           newValue = "'" + newValue + "'"
+                        elif field in intFields: 
+                            newValue = int(newValue)     
+                        
                         query =f"""
                                 update {uoperation}
-                                set {field} = {newValue.replace("'", "''")}
+                                set {field} = {newValue}
                                 where id = {pkey};"""
                         cur.execute(query)
                         print("")
@@ -458,9 +480,10 @@ Operations include:
             elif int(operation) == 3:
                 print("")
                 print("You've selected 3. Insert record(s)")
+                
             elif int(operation) == 4:
                 print("")
-                print("You've selected 4. Delete record(s)")
+                print("You've selected 4. Delete record")
                 print("")
                 print("Select source table:")
                 query ="""
