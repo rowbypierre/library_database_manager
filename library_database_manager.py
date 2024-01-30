@@ -93,7 +93,7 @@ Operations include:
                 if qoperation == "exit":
                     print("")
                     print("Exiting...")
-                    qoperation = "character"  
+                    operation = "character"  
                     cur.close()
                     sys.exit() 
                                                               
@@ -372,22 +372,22 @@ Operations include:
                     print("Exiting...")
                     print("")
                     print("Closing connection...")
-                    qoperation = "character"  
+                    operation = "character"  
                     cur.close()
                     sys.exit() 
                                                               
                 elif uoperation.isdigit() == False and uoperation.lower() in tables:
                     print("")
                     print("Querying database...")
-                    query = """
+                    query = f"""
                     select  string_agg(column_name, ' ,') as column_string
                     from 	information_schema.columns
-                    where 	table_name = '{}';
-                    """.format(uoperation.lower())
+                    where 	table_name = '{uoperation.lower()}';
+                    """
                     cur.execute(query)
                     resultset1 = cur.fetchall()
                         
-                    query = "select * from {}; ".format(uoperation.lower())
+                    query = f"select * from {uoperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
                     resultset = resultset1 + resultset2
@@ -403,7 +403,7 @@ Operations include:
                     if pkey == "exit":
                         print("")
                         print("Exiting...")
-                        qoperation = "character"  
+                        operation = "character"  
                         cur.close()
                         sys.exit() 
                                                               
@@ -430,11 +430,10 @@ Operations include:
                         print("")
                         newValue = input("Enter new value for field: ")
                         newValue =  newValue.strip()
-                        query ="""
-                                update {}
-                                set {} = {}
-                                where id = {};"""
-                        query = query.format(uoperation,field, newValue, pkey)
+                        query =f"""
+                                update {uoperation}
+                                set {field} = {newValue.replace("'", "''")}
+                                where id = {pkey};"""
                         cur.execute(query)
                         print("")
                         print("Updating record...")
@@ -452,10 +451,9 @@ Operations include:
                         print("Exiting...")
                         print("")
                         print("Closing connection...")
-                        qoperation = "character"  
+                        operation = "character"  
                         cur.close()
-                        sys.exit()       
-                    
+                        sys.exit()                           
                         
             elif int(operation) == 3:
                 print("")
@@ -463,6 +461,102 @@ Operations include:
             elif int(operation) == 4:
                 print("")
                 print("You've selected 4. Delete record(s)")
+                print("")
+                print("Select source table:")
+                query ="""
+                select  --*,
+                        table_name
+                from    information_schema.tables
+                where   table_catalog = 'library'
+                        and table_schema = 'public';
+                """
+                print("")
+                print("Quering database...")
+                cur.execute(query)
+                resultset = cur.fetchall()
+                tables = []                    
+                for row in resultset:
+                    rowx = ''.join(row)
+                    rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                    tables.append(rowx)
+                
+                print("")
+                print("Printing database tables...")
+                print("")
+                for table in tables:
+                    print(table)
+                
+                print("") 
+                doperation = input("Enter table: ")
+                if uoperation == "exit":
+                    print("")
+                    print("Exiting...")
+                    print("")
+                    print("Closing connection...")
+                    operation = "character"  
+                    cur.close()
+                    sys.exit() 
+                                                              
+                elif doperation.isdigit() == False and uoperation.lower() in tables:
+                    print("")
+                    print("Querying database...")
+                    query = f"""
+                    select  string_agg(column_name, ' ,') as column_string
+                    from 	information_schema.columns
+                    where 	table_name = '{doperation.lower()}';
+                    """
+                    cur.execute(query)
+                    resultset1 = cur.fetchall()
+                        
+                    query = f"select * from {doperation.lower()};"
+                    cur.execute(query)
+                    resultset2 = cur.fetchall()
+                    resultset = resultset1 + resultset2
+                    print("")
+                    print("Printing table records...")
+                    for row in resultset:
+                        print(row)
+                        
+                    print("")
+                    print("Select primary key of record to be deleted.")
+                    print("")
+                    pkey = input("Enter primary key: ")
+                    if pkey == "exit":
+                        print("")
+                        print("Exiting...")
+                        operation = "character"  
+                        cur.close()
+                        sys.exit() 
+                                                              
+                    elif pkey.isdigit() == True and int(pkey) > 0:
+                        pkey = int(pkey)
+                        print("")
+                        query =f"""
+                                delete from {doperation.lower()}
+                                where id = {pkey};"""
+                        cur.execute(query)
+                        print("")
+                        print("Deleting record...")
+                        print("")
+                        # print(f"Database message: {resultset}")
+                        print("Querying table records...")
+                        query = f"""select * from {uoperation} 
+                                where   (id < ({pkey} + 10))
+                                        or (id > ({pkey} - 10));"""
+                        cur.execute(query)
+                        resultset = cur.fetchall()
+                        print("")
+                        print("Printing records (with id greater (+ 10) or less (-10) than deleted record)...")           
+                        print("")
+                        for row in resultset:
+                            print(row)
+                        print("")
+                        print("Exiting...")
+                        print("")
+                        print("Closing connection...")
+                        operation = "character"  
+                        cur.close()
+                        sys.exit()                  
 
 
 
