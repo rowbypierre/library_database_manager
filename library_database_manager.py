@@ -455,7 +455,9 @@ Operations include:
                         query =f"""
                                 update {uoperation}
                                 set {field} = {newValue}
-                                where id = {pkey};"""
+                                where id = {pkey};
+                                
+                                commit; """
                         cur.execute(query)
                         print("")
                         print("Updating record...")
