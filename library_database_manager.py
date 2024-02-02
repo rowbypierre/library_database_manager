@@ -526,7 +526,7 @@ Operations include:
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
                                                     and data_type in ('bigint', 'numeric', 'smallint', 'int', 'interger')
-                                                    and table_name = {ioperation};   
+                                                    and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset3 = cur.fetchall()
@@ -541,7 +541,7 @@ Operations include:
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
                                                     and data_type like '%date%'
-                                                    and table_name = {ioperation};   
+                                                    and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset3 = cur.fetchall()
@@ -556,7 +556,7 @@ Operations include:
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
                                                     and data_type like'%timestamp%'
-                                                    and table_name = {ioperation};   
+                                                    and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset3 = cur.fetchall()
@@ -599,7 +599,7 @@ Operations include:
                             """
                     cur.execute(query)
                     resultset2 = cur.fetchone()
-                    columnCount = ''.join(resultset2)
+                    columnCount = ''.join(str(resultset2))
                     columnCount = columnCount.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     columnCount = int(columnCount)
                     
@@ -611,7 +611,7 @@ Operations include:
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and table_name = {ioperation};   
+                                                    and table_name = '{ioperation}';   
                             """ 
                     cur.execute(query)
                     resultset6 = cur.fetchall()
@@ -634,20 +634,25 @@ Operations include:
                                 fieldValue =  fieldValue.strip().replace("'", "''")
                                 fieldValue = "'" + fieldValue + "'"
                         if counter == 1:
-                            insertQuery + '(' + fieldValue + ','
-                            columnClause + '(' + fieldx + ','
+                            insertQuery = insertQuery + '(' + fieldValue + ','
+                            columnClause = columnClause + '(' + fieldx + ','
                         elif counter > 1 and counter < columnCount:
-                            insertQuery + ' ' + fieldValue + ','
-                            columnClause + ' ' + fieldx + ','
+                            insertQuery = insertQuery + ' ' + fieldValue + ','
+                            columnClause = columnClause + ' ' + fieldx + ','
                         elif counter == columnCount:
-                            insertQuery + ' ' + fieldValue + ')'
-                            columnClause + ' ' + fieldx + ')'
+                            insertQuery = insertQuery + ' ' + fieldValue + ')'
+                            columnClause = columnClause + ' ' + fieldx + ')'
                             print("")
                             print("Printing insert statement...")
                             print("")
-                            insertQuery.replace('columnClause', f'{columnClause}')
-                            print(insertQuery)
-                            print(confirmQuery)
+                            
+                    insertQuery = insertQuery.replace('columnClause', f'{columnClause}')
+                    print(insertQuery)
+                    print(columnClause)
+                    print(confirmQuery)
+                    cur.close()
+                    operation = 'character'
+                            
                 
                 
             elif int(operation) == 4:
