@@ -422,7 +422,6 @@ Operations include:
                         for column in resultset:
                             print(column)
                         print("")
-                        print("Non-numeric values MUST be enclosed with single quotations.")
                         print("Use 'YYYY-MM-DD' for fields with date datatype.")
                         
                         print("")
@@ -442,7 +441,7 @@ Operations include:
                         for fields in resultset:
                             fieldx = ''.join(field)
                             fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
-                            intFields.append(rowx)
+                            intFields.append(fieldx)
                             
                         print("")
                         newValue = input("Enter new value for field: ")
@@ -482,6 +481,174 @@ Operations include:
             elif int(operation) == 3:
                 print("")
                 print("You've selected 3. Insert record(s)")
+                print("")
+                print("Select table:")
+                query ="""
+                select  --*,
+                        table_name
+                from    information_schema.tables
+                where   table_catalog = 'library'
+                        and table_schema = 'public';
+                """
+                print("")
+                print("Quering database tables...")
+                cur.execute(query)
+                resultset1 = cur.fetchall()
+                
+                tables = []                    
+                for row in resultset1:
+                    rowx = ''.join(row)
+                    rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                    tables.append(rowx)
+                
+                print("")
+                print("Printing database tables...")
+                print("")
+                for table in tables:
+                    print(table)
+                
+                print("") 
+                ioperation = input("Enter table: ")
+                if ioperation == "exit":
+                    print("")
+                    print("Exiting...")
+                    print("")
+                    print("Closing connection...")
+                    operation = "character"  
+                    cur.close()
+                    sys.exit() 
+                                                              
+                elif ioperation.isdigit() == False and ioperation.lower() in tables:
+                    
+                    intFields = []
+                    query = f"""
+                                select distinct 	column_name --, data_type 
+                                from 				information_schema."columns"
+                                where 				table_catalog = 'library'
+                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'interger')
+                                                    and table_name = {ioperation};   
+                            """
+                    cur.execute(query)
+                    resultset3 = cur.fetchall()
+                    for fields in resultset3:
+                        fieldx = ''.join(field)
+                        fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                        intFields.append(fieldx)
+                    
+                    dateFields = []
+                    query = f"""
+                                select distinct 	column_name --, data_type 
+                                from 				information_schema."columns"
+                                where 				table_catalog = 'library'
+                                                    and data_type like '%date%'
+                                                    and table_name = {ioperation};   
+                            """
+                    cur.execute(query)
+                    resultset3 = cur.fetchall()
+                    for fields in resultset3:
+                        fieldx = ''.join(field)
+                        fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                        dateFields.append(fieldx)
+                        
+                    tsFields = []
+                    query = f"""
+                                select distinct 	column_name --, data_type 
+                                from 				information_schema."columns"
+                                where 				table_catalog = 'library'
+                                                    and data_type like'%timestamp%'
+                                                    and table_name = {ioperation};   
+                            """
+                    cur.execute(query)
+                    resultset3 = cur.fetchall()
+                    for fields in resultset3:
+                        fieldx = ''.join(field)
+                        fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                        tsFields.append(fieldx)
+                            
+                    print("")
+                    print(f"Querying database for fields in {ioperation} ...")
+                    query = f"""
+                            select  string_agg(column_name, ' ,') as column_string
+                            from 	information_schema.columns
+                            where 	table_name = '{ioperation.lower()}';
+                            """
+                    cur.execute(query)
+                    resultset4 = cur.fetchone()
+                    print("")
+                    print(resultset4)
+                    
+                    print("")
+                    print(f"Querying database for field datatypes in {ioperation} ...")
+                    print("")
+                    print("Printing: field, datatype")
+                    query = f"""
+                            select 	column_name, data_type
+                            from 	information_schema.columns
+                            where 	table_name = '{ioperation}';
+                            """
+                    cur.execute(query)
+                    resultset5 = cur.fetchall()
+                    for column in resultset5:
+                        print("")
+                        print(column)
+                    
+                    query = f"""
+                            select  count(*)
+                            from 	information_schema.columns
+                            where 	table_name = '{ioperation.lower()}';
+                            """
+                    cur.execute(query)
+                    resultset2 = cur.fetchone()
+                    columnCount = ''.join(resultset2)
+                    columnCount = columnCount.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                    columnCount = int(columnCount)
+                    
+                    
+                    print("")
+                    print("Printing table columns...")
+                    counter = 0
+                    query = f"""
+                                select distinct 	column_name --, data_type 
+                                from 				information_schema."columns"
+                                where 				table_catalog = 'library'
+                                                    and table_name = {ioperation};   
+                            """ 
+                    cur.execute(query)
+                    resultset6 = cur.fetchall()
+                    insertQuery =   f'''
+                                    insert into {ioperation}
+                                    columnClause
+                                    values
+                                    
+                                    '''
+                    columnClause = ''
+                    for field in resultset6:
+                        fieldx = ''.join(field)
+                        fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                        counter = counter + 1 
+                        print("")
+                        fieldValue = input(f"Provide value for {fieldx}: ")
+                        if fieldx == 'id':
+                            confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
+                        if fieldx not in intFields:
+                                fieldValue =  fieldValue.strip().replace("'", "''")
+                                fieldValue = "'" + fieldValue + "'"
+                        if counter == 1:
+                            insertQuery + '(' + fieldValue + ','
+                            columnClause + '(' + fieldx + ','
+                        elif counter > 1 and counter < columnCount:
+                            insertQuery + ' ' + fieldValue + ','
+                            columnClause + ' ' + fieldx + ','
+                        elif counter == columnCount:
+                            insertQuery + ' ' + fieldValue + ')'
+                            columnClause + ' ' + fieldx + ')'
+                            print("")
+                            print("Printing insert statement...")
+                            print("")
+                            insertQuery.replace('columnClause', f'{columnClause}')
+                            print(insertQuery)
+                            print(confirmQuery)
+                
                 
             elif int(operation) == 4:
                 print("")
@@ -522,7 +689,7 @@ Operations include:
                     cur.close()
                     sys.exit() 
                                                               
-                elif doperation.isdigit() == False and uoperation.lower() in tables:
+                elif doperation.isdigit() == False and doperation.lower() in tables:
                     print("")
                     print("Querying database...")
                     query = f"""
@@ -565,7 +732,7 @@ Operations include:
                         print("")
                         # print(f"Database message: {resultset}")
                         print("Querying table records...")
-                        query = f"""select * from {uoperation} 
+                        query = f"""select * from {doperation} 
                                 where   (id < ({pkey} + 10))
                                         or (id > ({pkey} - 10));"""
                         cur.execute(query)
