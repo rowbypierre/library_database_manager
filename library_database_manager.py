@@ -433,7 +433,7 @@ Operations include:
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'interger')
+                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
                                                     and table_name not like '%pg%'     
                         """
                         cur.execute(query)
@@ -525,15 +525,20 @@ Operations include:
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'interger')
+                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset3 = cur.fetchall()
                     for fields in resultset3:
-                        fieldx = ''.join(field)
+                        fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         intFields.append(fieldx)
+                    
+                    #DELETE
+                    for field in intFields:
+                        print (field)
+                    print('*******') 
                     
                     dateFields = []
                     query = f"""
@@ -631,11 +636,16 @@ Operations include:
                         if fieldx == 'id':
                             confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
                         if fieldx not in intFields:
-                                fieldValue =  fieldValue.strip().replace("'", "''")
-                                fieldValue = "'" + fieldValue + "'"
-                        if counter == 1:
-                            insertQuery = insertQuery + '(' + fieldValue + ','
+                            fieldValue =  fieldValue.strip().replace("'", "''")
+                            fieldValue = "'" + fieldValue + "'"
+                        if fieldx in intFields:
+                            fieldValue =  fieldValue.strip().replace("'", " ")
+                        if counter == 1 and fieldx in intFields:
+                            insertQuery = insertQuery + f'( {fieldValue} ,'
                             columnClause = columnClause + '(' + fieldx + ','
+                        if counter == 1 and fieldx not in intFields:
+                            insertQuery = insertQuery + '(' + fieldValue + ','
+                            columnClause = columnClause + '(' + fieldx + ','        
                         elif counter > 1 and counter < columnCount:
                             insertQuery = insertQuery + ' ' + fieldValue + ','
                             columnClause = columnClause + ' ' + fieldx + ','
