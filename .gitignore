@@ -2,4 +2,5 @@
 database.ini
 #throwaway file
 scrap.py
+#python bytecode cache files
 __pycache__/
