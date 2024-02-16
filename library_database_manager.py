@@ -2,6 +2,7 @@ import psycopg2
 import sys
 from config import config
 from login import logon
+import datetime
 
 if __name__ == '__main__':
     logon()
@@ -31,7 +32,7 @@ Operations include:
     3. Insert record
     4. Delete record
     
-    Enter 'exit' to exit utility""")
+Enter 'exit' to exit utility""")
     
     print("")
     operation = input("Enter operation: ")
@@ -541,6 +542,7 @@ Operations include:
                     print('*******') 
                     
                     dateFields = []
+                    dateFields2 = ['dob', 'due', 'date', ]
                     query = f"""
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
@@ -549,9 +551,9 @@ Operations include:
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
-                    resultset3 = cur.fetchall()
-                    for fields in resultset3:
-                        fieldx = ''.join(field)
+                    resultset3a = cur.fetchall()
+                    for fields in resultset3a:
+                        fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         dateFields.append(fieldx)
                         
@@ -564,9 +566,9 @@ Operations include:
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
-                    resultset3 = cur.fetchall()
-                    for fields in resultset3:
-                        fieldx = ''.join(field)
+                    resultset3b = cur.fetchall()
+                    for fields in resultset3b:
+                        fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         tsFields.append(fieldx)
                             
@@ -620,37 +622,50 @@ Operations include:
                             """ 
                     cur.execute(query)
                     resultset6 = cur.fetchall()
-                    insertQuery =   f'''
-                                    insert into {ioperation}
-                                    columnClause
-                                    values
-                                    
-                                    '''
+                    insertQuery =   f'''insert into {ioperation}
+                                        columnClause
+                                        values
+                                        '''
                     columnClause = ''
+                    
                     for field in resultset6:
                         fieldx = ''.join(field)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         counter = counter + 1 
                         print("")
-                        fieldValue = input(f"Provide value for {fieldx}: ")
-                        if fieldx == 'id':
-                            confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
+                        if ((fieldx not in tsFields) and (fieldx not in dateFields) and (fieldx.find('modified') < 0) and (fieldx.find('created') < 0)) or (fieldx in dateFields2):
+                            if fieldx in dateFields2:
+                                fieldValue = input(f"Provide value formatted as 'YYYY-MM-DD' for {fieldx}: ")
+                            else:
+                                fieldValue = input(f"Provide value for {fieldx}: ")
+                                if fieldx == 'id':
+                                    confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
+                        if ((fieldx == 'modified_staff_id') or (fieldx == 'created_staff_id')):
+                            fieldValue = '999'
+                        if fieldx in tsFields:
+                            current_date = datetime.datetime.now()
+                            current_date = current_date.strftime('%Y-%m-%d %H:%M:%S')
+                            fieldValue = current_date
+                        if (fieldx in dateFields) and (fieldx not in dateFields2) :
+                            current_date = datetime.datetime.now()
+                            current_date = current_date.strftime('%Y-%m-%d')
+                            fieldValue = current_date
                         if fieldx not in intFields:
                             fieldValue =  fieldValue.strip().replace("'", "''")
                             fieldValue = "'" + fieldValue + "'"
                         if fieldx in intFields:
                             fieldValue =  fieldValue.strip().replace("'", " ")
-                        if counter == 1 and fieldx in intFields:
+                        if ((counter == 1) and (fieldx in intFields)):
                             insertQuery = insertQuery + f'( {fieldValue} ,'
                             columnClause = columnClause + '(' + fieldx + ','
-                        if counter == 1 and fieldx not in intFields:
-                            insertQuery = insertQuery + '(' + fieldValue + ','
+                        if ((counter == 1) and (fieldx not in intFields)):
+                            insertQuery = insertQuery + f'( {fieldValue} ,'
                             columnClause = columnClause + '(' + fieldx + ','        
-                        elif counter > 1 and counter < columnCount:
+                        if ((counter > 1) and (counter < columnCount)):
                             insertQuery = insertQuery + ' ' + fieldValue + ','
                             columnClause = columnClause + ' ' + fieldx + ','
-                        elif counter == columnCount:
-                            insertQuery = insertQuery + ' ' + fieldValue + ')'
+                        if counter == columnCount:
+                            insertQuery = insertQuery + ' ' + fieldValue + ') ;'
                             columnClause = columnClause + ' ' + fieldx + ')'
                             print("")
                             print("Printing insert statement...")
