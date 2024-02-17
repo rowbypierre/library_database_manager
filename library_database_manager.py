@@ -57,9 +57,9 @@ Enter 'exit' to exit utility""")
             if int(operation) > 4 or int(operation) < 1:
                 print("")
                 print("Select between:")
-                print("Option 1     (Query Table)")
+                print("Option 1     (Execute stored queries)")
                 print("or Option 2  (Update record)")
-                print("or Option 3  (Insert Record)")
+                print("or Option 3  (Create Record)")
                 print("or Option 4  (Delete recod)")
                 
                 operation = input("Enter operation: ")
@@ -80,7 +80,7 @@ Enter 'exit' to exit utility""")
                 print("")
                 print("You've selected 1. Query table")
                 print("")
-                print("Tables to query include: ")
+                print("Queries include: ")
                 print("1. Library catalog")
                 print("2. Catalog physical condition")
                 print("3. Available books")
@@ -409,10 +409,11 @@ Enter 'exit' to exit utility""")
                         sys.exit() 
                                                               
                     elif pkey.isdigit() == True and int(pkey) > 0:
+                        
                         pkey = int(pkey)
                         print("")
                         print(f"Querying database, retrieving {uoperation} layout")
-                        print("Printing: field, datatype")
+                        print("Printing field : datatype")
                         query = f"""
                         select 	column_name, data_type
                         from 	information_schema.columns
@@ -420,65 +421,119 @@ Enter 'exit' to exit utility""")
                         """
                         cur.execute(query)
                         resultset = cur.fetchall()
+                        datatypes = {}
+                        columns = []
                         for column in resultset:
-                            print(column)
-                        print("")
-                        print("Use 'YYYY-MM-DD' for fields with date datatype.")
-                        
-                        print("")
-                        field = input("Select field to update: ")
-                        field = field.strip().lower()
-                        
-                        intFields = []
-                        query = """
-                                select distinct 	column_name --, data_type 
-                                from 				information_schema."columns"
-                                where 				table_catalog = 'library'
-                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
-                                                    and table_name not like '%pg%'     
-                        """
-                        cur.execute(query)
-                        resultset = cur.fetchall()
-                        for fields in resultset:
-                            fieldx = ''.join(field)
-                            fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
-                            intFields.append(fieldx)
+                            columnx = str(column)
+                            columnx = columnx.strip().replace(')', '').replace('(', '').replace("'", "")
+                            x = columnx.split(', ')
+                            field = x[0]
+                            datatype = x[1]
+                            print(f"{field} : {datatype}")
+                            datatypes.update({field : datatype})
+                            columns.append(field)
                             
                         print("")
-                        newValue = input("Enter new value for field: ")
-                        if field not in intFields:
-                           newValue =  newValue.strip().replace("'", "''")
-                           newValue = "'" + newValue + "'"
-                        elif field in intFields: 
-                            newValue = int(newValue)     
+                        attribute = input("Select field to update: ")
+                        attribute = attribute.strip().lower()
                         
-                        query =f"""
-                                update {uoperation}
-                                set {field} = {newValue}
-                                where id = {pkey};
+                        if attribute in columns:
+                            intFields = []
+                            query = """
+                                    select distinct 	column_name --, data_type 
+                                    from 				information_schema."columns"
+                                    where 				table_catalog = 'library'
+                                                        and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
+                                                        and table_name not like '%pg%'     
+                            """
+                            cur.execute(query)
+                            resultset = cur.fetchall()
+                            for fields in resultset:
+                                fieldx = ''.join(fields)
+                                fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                                intFields.append(fieldx)
+                            
+                            dateFields = []
+                            query = f"""
+                                        select distinct 	column_name --, data_type 
+                                        from 				information_schema."columns"
+                                        where 				table_catalog = 'library'
+                                                            and data_type like '%date%'
+                                                            and table_name = '{ioperation}';   
+                                    """
+                            cur.execute(query)
+                            resultset = cur.fetchall()
+                            for fields in resultset:
+                                fieldx = ''.join(fields)
+                                fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                                dateFields.append(fieldx)
                                 
-                                commit; """
-                        cur.execute(query)
-                        print("")
-                        print("Updating record...")
-                        print("")
-                        # print(f"Database message: {resultset}")
-                        print("Querying updated record...")
-                        query = f"""select * from {uoperation} where id = {pkey};"""
-                        cur.execute(query)
-                        resultset = cur.fetchone()
-                        print("")
-                        print("Printing updated record...")           
-                        print("")
-                        print(resultset)
-                        print("")
-                        print("Exiting...")
-                        print("")
-                        print("Closing connection...")
-                        operation = "character"  
-                        cur.close()
-                        sys.exit()                           
+                            tsFields = []
+                            query = f"""
+                                        select distinct 	column_name --, data_type 
+                                        from 				information_schema."columns"
+                                        where 				table_catalog = 'library'
+                                                            and data_type like'%timestamp%'
+                                                            and table_name = '{ioperation}';   
+                                    """
+                            cur.execute(query)
+                            resultset = cur.fetchall()
+                            for fields in resultset:
+                                fieldx = ''.join(fields)
+                                fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                                tsFields.append(fieldx)    
+                                print("")
+                            
+                            if ((attribute not in tsFields) and (attribute not in dateFields)): 
+                                newValue = input("Enter new value for field: ")
+                                if attribute not in intFields:
+                                    newValue =  newValue.strip().replace("'", "''")
+                                    newValue = "'" + newValue + "'"
+                                elif attribute in intFields: 
+                                    newValue = int(newValue)
+                            elif attribute in tsFields:     
+                                newValue = input(f"Provide value formatted as 'YYYY-MM-DD' for {attribute}: ")
+                            elif attribute in dateFields:
+                                newValue = input(f"Provide value formatted as 'YYYY-MM-DD hh:mm:ss' for {attribute}: ")
+                                    
+                            query =f"""
+                                    update {uoperation}
+                                    set {field} = {newValue}
+                                    where id = {pkey};
+                                    
+                                    commit; """
+                            cur.execute(query)
+                            print("")
+                            print("Updating record...")
+                            print("")
+                            # print(f"Database message: {resultset}")
+                            print("Querying updated record...")
+                            query = f"""select * from {uoperation} where id = {pkey};"""
+                            cur.execute(query)
+                            resultset = cur.fetchone()
+                            print("")
+                            print("Printing updated record...")           
+                            print("")
+                            print(resultset)
+                            print("")
+                            print("Exiting...")
+                            print("")
+                            print("Closing connection...")
+                            operation = "character"  
+                            cur.close()
+                            sys.exit()
                         
+                        else: 
+                            print("")
+                            print ("Table field enter does not exist")                           
+                            print("")
+                            print("Exiting...")
+                            print("")
+                            print("Closing connection...")
+                            operation = "character"  
+                            cur.close()
+                            sys.exit()
+                            
             elif int(operation) == 3:
                 print("")
                 print("You've selected 3. Insert record(s)")
