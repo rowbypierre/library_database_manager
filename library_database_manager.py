@@ -386,12 +386,12 @@ Enter 'exit' to exit utility""")
                     where 	table_name = '{uoperation.lower()}';
                     """
                     cur.execute(query)
-                    resultset1 = cur.fetchall()
+                    resultset = cur.fetchall()
                         
                     query = f"select * from {uoperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    resultset = resultset1 + resultset2
+                    resultset = resultset + resultset2
                     print("")
                     print("Printing table records...")
                     for row in resultset:
@@ -494,10 +494,10 @@ Enter 'exit' to exit utility""")
                 print("")
                 print("Quering database tables...")
                 cur.execute(query)
-                resultset1 = cur.fetchall()
+                resultset = cur.fetchall()
                 
                 tables = []                    
-                for row in resultset1:
+                for row in resultset:
                     rowx = ''.join(row)
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
@@ -530,16 +530,11 @@ Enter 'exit' to exit utility""")
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
-                    resultset3 = cur.fetchall()
-                    for fields in resultset3:
+                    resultset = cur.fetchall()
+                    for fields in resultset:
                         fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
-                        intFields.append(fieldx)
-                    
-                    #DELETE
-                    for field in intFields:
-                        print (field)
-                    print('*******') 
+                        intFields.append(fieldx) 
                     
                     dateFields = []
                     dateFields2 = ['dob', 'due', 'date', ]
@@ -551,8 +546,8 @@ Enter 'exit' to exit utility""")
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
-                    resultset3a = cur.fetchall()
-                    for fields in resultset3a:
+                    resultset = cur.fetchall()
+                    for fields in resultset:
                         fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         dateFields.append(fieldx)
@@ -566,38 +561,41 @@ Enter 'exit' to exit utility""")
                                                     and table_name = '{ioperation}';   
                             """
                     cur.execute(query)
-                    resultset3b = cur.fetchall()
-                    for fields in resultset3b:
+                    resultset = cur.fetchall()
+                    for fields in resultset:
                         fieldx = ''.join(fields)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         tsFields.append(fieldx)
                             
-                    print("")
-                    print(f"Querying database for fields in {ioperation} ...")
-                    query = f"""
-                            select  string_agg(column_name, ' ,') as column_string
-                            from 	information_schema.columns
-                            where 	table_name = '{ioperation.lower()}';
-                            """
-                    cur.execute(query)
-                    resultset4 = cur.fetchone()
-                    print("")
-                    print(resultset4)
+                    # print("")
+                    # print(f"Querying database for fields in {ioperation} ...")
+                    # query = f"""
+                    #         select  string_agg(column_name, ' ,') as column_string
+                    #         from 	information_schema.columns
+                    #         where 	table_name = '{ioperation.lower()}';
+                    #         """
+                    # cur.execute(query)
+                    # resultset4 = cur.fetchone()
+                    # print("")
+                    # print(resultset4)
                     
                     print("")
-                    print(f"Querying database for field datatypes in {ioperation} ...")
-                    print("")
-                    print("Printing: field, datatype")
+                    print(f"Querying database for fields and datatypes in {ioperation} ...")
                     query = f"""
                             select 	column_name, data_type
                             from 	information_schema.columns
                             where 	table_name = '{ioperation}';
                             """
                     cur.execute(query)
-                    resultset5 = cur.fetchall()
-                    for column in resultset5:
-                        print("")
-                        print(column)
+                    resultset = cur.fetchall()
+                    datatypes = {}
+                    for column in resultset:
+                        columnx = str(column)
+                        columnx = columnx.strip().replace(')', '').replace('(', '').replace("'", "")
+                        x = columnx.split(', ')
+                        field = x[0]
+                        datatype = x[1]
+                        datatypes.update({field : datatype})
                     
                     query = f"""
                             select  count(*)
@@ -621,25 +619,37 @@ Enter 'exit' to exit utility""")
                                                     and table_name = '{ioperation}';   
                             """ 
                     cur.execute(query)
-                    resultset6 = cur.fetchall()
-                    insertQuery =   f'''insert into {ioperation}
+                    resultset = cur.fetchall()
+                    insertQuery =   f'''
+                                        insert into {ioperation}
                                         columnClause
                                         values
                                         '''
                     columnClause = ''
                     
-                    for field in resultset6:
+                    for field in resultset:
                         fieldx = ''.join(field)
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         counter = counter + 1 
-                        print("")
                         if ((fieldx not in tsFields) and (fieldx not in dateFields) and (fieldx.find('modified') < 0) and (fieldx.find('created') < 0)) or (fieldx in dateFields2):
+                            print("")
                             if fieldx in dateFields2:
+                                print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
                                 fieldValue = input(f"Provide value formatted as 'YYYY-MM-DD' for {fieldx}: ")
-                            else:
+                            if fieldx == 'id':
+                                query = f'select max({fieldx}) from {ioperation};'
+                                cur.execute(query)
+                                resultset = cur.fetchone()
+                                newID = str(resultset)
+                                newID = newID.replace("'","").replace(",","").replace(")","").replace("(","").strip()
+                                fieldValue = str(int(newID) + 1)
+                                print(f"Record ID is {fieldValue} ")
+                                
+                                confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
+                            if (fieldx not in dateFields2) and (fieldx != 'id'):
+                                print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
                                 fieldValue = input(f"Provide value for {fieldx}: ")
-                                if fieldx == 'id':
-                                    confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
+                                
                         if ((fieldx == 'modified_staff_id') or (fieldx == 'created_staff_id')):
                             fieldValue = '999'
                         if fieldx in tsFields:
@@ -672,14 +682,27 @@ Enter 'exit' to exit utility""")
                             print("")
                             
                     insertQuery = insertQuery.replace('columnClause', f'{columnClause}')
-                    print(insertQuery)
-                    print(columnClause)
-                    print(confirmQuery)
+                    
+                    cur.execute(insertQuery)
+                    cur.commit()
+                    print("")
+                    print("Creating record...")
+                    print("")
+                    print("Querying new record...")
+                    cur.execute(confirmQuery)
+                    resultset = cur.fetchone()
+                    print("")
+                    print("Printing updated record...")           
+                    print("")
+                    print(resultset)
+                    print("")
+                    print("Exiting...")
+                    print("")
+                    print("Closing connection...")
+                    operation = "character"  
                     cur.close()
-                    operation = 'character'
+                    sys.exit()     
                             
-                
-                
             elif int(operation) == 4:
                 print("")
                 print("You've selected 4. Delete record")
@@ -710,7 +733,7 @@ Enter 'exit' to exit utility""")
                 
                 print("") 
                 doperation = input("Enter table: ")
-                if uoperation == "exit":
+                if doperation == "exit":
                     print("")
                     print("Exiting...")
                     print("")
@@ -728,21 +751,21 @@ Enter 'exit' to exit utility""")
                     where 	table_name = '{doperation.lower()}';
                     """
                     cur.execute(query)
-                    resultset1 = cur.fetchall()
+                    resultset = cur.fetchall()
                         
                     query = f"select * from {doperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    resultset = resultset1 + resultset2
+                    resultset = resultset2 + resultset 
                     print("")
                     print("Printing table records...")
                     for row in resultset:
                         print(row)
                         
                     print("")
-                    print("Select primary key of record to be deleted.")
+                    print("Select id to be deleted.")
                     print("")
-                    pkey = input("Enter primary key: ")
+                    pkey = input("Enter id: ")
                     if pkey == "exit":
                         print("")
                         print("Exiting...")
@@ -757,18 +780,17 @@ Enter 'exit' to exit utility""")
                                 delete from {doperation.lower()}
                                 where id = {pkey};"""
                         cur.execute(query)
-                        print("")
                         print("Deleting record...")
                         print("")
                         # print(f"Database message: {resultset}")
                         print("Querying table records...")
                         query = f"""select * from {doperation} 
-                                where   (id < ({pkey} + 10))
-                                        or (id > ({pkey} - 10));"""
+                                where   (id < ({pkey} + 5))
+                                        or (id > ({pkey} - 5));"""
                         cur.execute(query)
                         resultset = cur.fetchall()
                         print("")
-                        print("Printing records (with id greater (+ 10) or less (-10) than deleted record)...")           
+                        print("Printing records (with id greater (+ 5) or less (- 5) than deleted record)...")           
                         print("")
                         for row in resultset:
                             print(row)
