@@ -23,6 +23,7 @@ def logon():
             print("Terminating script...")
             sys.exit()
         elif username == xusername:
+            username = username.capitalize()
             print("")
             print(f"Welcome {username}")
             time.sleep(1)
