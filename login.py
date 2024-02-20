@@ -1,4 +1,5 @@
 import sys, time 
+from getpass import getpass
 
 def logon():
     xusername = 'user'
@@ -31,7 +32,7 @@ def logon():
             while status == "locked":
                 
                 print("")
-                password = input("Enter password: ").lower().strip()
+                password = getpass("Enter password: ").lower().strip()
                 time.sleep(1)
                 pthreshold += 1
             
@@ -39,11 +40,14 @@ def logon():
                     print("")
                     print("Last attempt before script terminates.")
                     time.sleep(1)
+                if pthreshold >= 1:
+                    print("")
+                    print("Incorrect password entrered for: " + username)
                 elif pthreshold == 10 and (password != xpassword):
                     print("")
                     print("Terminating script...")
                     sys.exit()
-                elif password == xpassword:
+                if password == xpassword:
                     print("")
                     print(f"Correct password entered for username: {username}")
                     time.sleep(1)
