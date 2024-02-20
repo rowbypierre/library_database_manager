@@ -3,6 +3,7 @@ import sys
 from config import config
 from login import logon
 import datetime
+import time
 
 if __name__ == '__main__':
     logon()
@@ -10,19 +11,22 @@ if __name__ == '__main__':
     parms = config()
     
     print("")
-    print ('Attempting to establish connection to server: "localhost" database: "library" ...')
+    print('Attempting to establish connection to server: "localhost" database: "library" ...')
+    time.sleep(1)
     
     conn = psycopg2.connect(**parms)
     cur = conn.cursor()
-    
     print("")
-    print("PostgreSQL database version: ")
+    print("Querying database version...")
+    print("")
+    time.sleep(1)
     
     cur.execute('select version();')
     db_version = cur.fetchone()
-    print("")
-    print(db_version)
-    
+    db_version = str(db_version).replace("'","").replace(",","").replace(")","").replace("(","").strip()
+    print(f"PostgreSQL database version: {db_version}")
+    time.sleep(1)
+  
     print("""
 Library Database Management System Utility
     
@@ -35,7 +39,9 @@ Operations include:
 Enter 'exit' to exit utility""")
     
     print("")
-    operation = input("Enter operation: ")
+    time.sleep(1)
+    operation = input("Enter Option (#): ")
+    time.sleep(1)
     if operation == "exit":
         print("")
         print("Exiting...")
@@ -62,7 +68,8 @@ Enter 'exit' to exit utility""")
                 print("or Option 3  (Create Record)")
                 print("or Option 4  (Delete recod)")
                 
-                operation = input("Enter operation: ")
+                operation = input("Enter Option (#): ")
+                time.sleep(1)
                 if operation == "exit":
                     print("")
                     print("Exiting...")
@@ -74,11 +81,13 @@ Enter 'exit' to exit utility""")
                     print("Enter numeric value 1, 2, 3, or 4") 
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()
                 
             elif int(operation) == 1:
                 print("")
-                print("You've selected 1. Query table")
+                print("You've selected 1. Execute query")
                 print("")
                 print("Queries include: ")
                 print("1. Library catalog")
@@ -90,7 +99,8 @@ Enter 'exit' to exit utility""")
                 print("7. Book fines summary")
                 print("")
                 
-                qoperation = input("Enter selection: ")
+                qoperation = input("Enter number for desired query to be executed: ")
+                time.sleep(1)
                 if qoperation == "exit":
                     print("")
                     print("Exiting...")
@@ -117,9 +127,11 @@ Enter 'exit' to exit utility""")
                     print('(Title, ISBN, Genre, Book Condition)')                    
                     for row in resultset:
                         print(row)
-                                  
+                        time.sleep(1)          
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                  
                     operation = "character"
                 
@@ -143,10 +155,12 @@ Enter 'exit' to exit utility""")
                     print('(Condition, Count, Percent)')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()  
                     operation = "character"
                     
@@ -182,9 +196,11 @@ Enter 'exit' to exit utility""")
                     print('(Book Title, Author First Name, Author Last Name, Author MI)')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                   
                     operation = "character"
                     
@@ -218,9 +234,11 @@ Enter 'exit' to exit utility""")
                     print('(Book Title, Author First Name, Author Last Name, Author MI)')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                   
                     operation = "character"
                     
@@ -257,9 +275,11 @@ Enter 'exit' to exit utility""")
                     print('(Book Title, Days Loaned)')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                   
                     operation = "character"
                     
@@ -295,9 +315,11 @@ Enter 'exit' to exit utility""")
                     print('(Patron, Book, Checkout, Due, Returned, Days Overdue, Fine)')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                    
                     operation = "character"
                     
@@ -329,9 +351,11 @@ Enter 'exit' to exit utility""")
                     print('(Genre, Fine (AVG))')                    
                     for row in resultset:
                         print(row)
-                
+                        time.sleep(1)
                     print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     cur.close()                    
                     operation = "character"                
                 
@@ -342,7 +366,7 @@ Enter 'exit' to exit utility""")
                 print("")
                 print("You've selected 2. Update record")
                 print("")
-                print("Select source table:")
+                print("Querying database for tables...")
                 query ="""
                 select  --*,
                         table_name
@@ -350,8 +374,6 @@ Enter 'exit' to exit utility""")
                 where   table_catalog = 'library'
                         and table_schema = 'public';
                 """
-                print("")
-                print("Quering database...")
                 cur.execute(query)
                 resultset = cur.fetchall()
                 tables = []                    
@@ -365,14 +387,16 @@ Enter 'exit' to exit utility""")
                 print("")
                 for table in tables:
                     print(table)
-                
+                    time.sleep(1)
+                    
                 print("") 
                 uoperation = input("Enter table: ")
+                time.sleep(1)
                 if uoperation == "exit":
                     print("")
-                    print("Exiting...")
-                    print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     operation = "character"  
                     cur.close()
                     sys.exit() 
@@ -381,26 +405,44 @@ Enter 'exit' to exit utility""")
                     print("")
                     print("Querying database...")
                     query = f"""
-                    select  string_agg(column_name, ' ,') as column_string
+                    select  string_agg(column_name, ' , ') as column_string
                     from 	information_schema.columns
                     where 	table_name = '{uoperation.lower()}';
                     """
                     cur.execute(query)
                     resultset = cur.fetchall()
-                        
+                    stringx = ""
+                    resultset = str(resultset).split(",")
+                    count = len(resultset)
+                    counter = 0 
+                    for x in resultset:
+                        x = str(x)
+                        x = x.replace(" ", "").replace("'", " ")
+                        counter = counter +1
+                        if counter != count and counter == count - 1:
+                            stringx = stringx + x
+                        elif counter != count and counter != count - 1:
+                            stringx = stringx + x + " , "
+                        elif counter == count:
+                            stringx = stringx + x 
+                    resultset = stringx    
+                                               
                     query = f"select * from {uoperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    resultset = resultset + resultset2
                     print("")
-                    print("Printing table records...")
-                    for row in resultset:
+                    print(f"Printing '{uoperation}' table records...")
+                    print("")
+                    print(resultset)
+                    for row in resultset2:
                         print(row)
+                        time.sleep(1)
                         
                     print("")
                     print("Select primary key of record to be updated.")
                     print("")
                     pkey = input("Enter primary key: ")
+                    time.sleep(1)
                     if pkey == "exit":
                         print("")
                         print("Exiting...")
@@ -412,7 +454,8 @@ Enter 'exit' to exit utility""")
                         
                         pkey = int(pkey)
                         print("")
-                        print(f"Querying database, retrieving {uoperation} layout")
+                        print(f"Querying database, retrieving {uoperation} definiton...")
+                        print("")
                         print("Printing field : datatype")
                         query = f"""
                         select 	column_name, data_type
@@ -435,6 +478,7 @@ Enter 'exit' to exit utility""")
                             
                         print("")
                         attribute = input("Select field to update: ")
+                        time.sleep(1)
                         attribute = attribute.strip().lower()
                         
                         if attribute in columns:
@@ -459,7 +503,7 @@ Enter 'exit' to exit utility""")
                                         from 				information_schema."columns"
                                         where 				table_catalog = 'library'
                                                             and data_type like '%date%'
-                                                            and table_name = '{ioperation}';   
+                                                            and table_name = '{uoperation}';   
                                     """
                             cur.execute(query)
                             resultset = cur.fetchall()
@@ -474,7 +518,7 @@ Enter 'exit' to exit utility""")
                                         from 				information_schema."columns"
                                         where 				table_catalog = 'library'
                                                             and data_type like'%timestamp%'
-                                                            and table_name = '{ioperation}';   
+                                                            and table_name = '{uoperation}';   
                                     """
                             cur.execute(query)
                             resultset = cur.fetchall()
@@ -482,19 +526,23 @@ Enter 'exit' to exit utility""")
                                 fieldx = ''.join(fields)
                                 fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                                 tsFields.append(fieldx)    
-                                print("")
+                            print("")
                             
                             if ((attribute not in tsFields) and (attribute not in dateFields)): 
+                                print("")
                                 newValue = input("Enter new value for field: ")
+                                time.sleep(1)
                                 if attribute not in intFields:
                                     newValue =  newValue.strip().replace("'", "''")
                                     newValue = "'" + newValue + "'"
                                 elif attribute in intFields: 
                                     newValue = int(newValue)
-                            elif attribute in tsFields:     
+                            elif attribute in dateFields:     
                                 newValue = input(f"Provide value formatted as 'YYYY-MM-DD' for {attribute}: ")
-                            elif attribute in dateFields:
+                                time.sleep(1)
+                            elif attribute in tsFields:
                                 newValue = input(f"Provide value formatted as 'YYYY-MM-DD hh:mm:ss' for {attribute}: ")
+                                time.sleep(1)
                                     
                             query =f"""
                                     update {uoperation}
@@ -516,9 +564,9 @@ Enter 'exit' to exit utility""")
                             print("")
                             print(resultset)
                             print("")
-                            print("Exiting...")
-                            print("")
                             print("Closing connection...")
+                            print("")
+                            print("Exiting...")
                             operation = "character"  
                             cur.close()
                             sys.exit()
@@ -527,9 +575,9 @@ Enter 'exit' to exit utility""")
                             print("")
                             print ("Table field enter does not exist")                           
                             print("")
-                            print("Exiting...")
-                            print("")
                             print("Closing connection...")
+                            print("")
+                            print("Exiting...")
                             operation = "character"  
                             cur.close()
                             sys.exit()
@@ -562,14 +610,16 @@ Enter 'exit' to exit utility""")
                 print("")
                 for table in tables:
                     print(table)
-                
+                    time.sleep(1)
+                    
                 print("") 
                 ioperation = input("Enter table: ")
+                time.sleep(1)
                 if ioperation == "exit":
                     print("")
-                    print("Exiting...")
-                    print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     operation = "character"  
                     cur.close()
                     sys.exit() 
@@ -690,7 +740,9 @@ Enter 'exit' to exit utility""")
                             print("")
                             if fieldx in dateFields2:
                                 print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
+                                print("")
                                 fieldValue = input(f"Provide value formatted as 'YYYY-MM-DD' for {fieldx}: ")
+                                time.sleep(1)
                             if fieldx == 'id':
                                 query = f'select max({fieldx}) from {ioperation};'
                                 cur.execute(query)
@@ -703,7 +755,9 @@ Enter 'exit' to exit utility""")
                                 confirmQuery = f''' select * from {ioperation} where {fieldx} = {fieldValue}'''
                             if (fieldx not in dateFields2) and (fieldx != 'id'):
                                 print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
+                                print("")
                                 fieldValue = input(f"Provide value for {fieldx}: ")
+                                time.sleep(1)
                                 
                         if ((fieldx == 'modified_staff_id') or (fieldx == 'created_staff_id')):
                             fieldValue = '999'
@@ -733,13 +787,11 @@ Enter 'exit' to exit utility""")
                             insertQuery = insertQuery + ' ' + fieldValue + ') ;'
                             columnClause = columnClause + ' ' + fieldx + ')'
                             print("")
-                            print("Printing insert statement...")
-                            print("")
                             
                     insertQuery = insertQuery.replace('columnClause', f'{columnClause}')
                     
                     cur.execute(insertQuery)
-                    cur.commit()
+                    conn.commit()
                     print("")
                     print("Creating record...")
                     print("")
@@ -751,9 +803,9 @@ Enter 'exit' to exit utility""")
                     print("")
                     print(resultset)
                     print("")
-                    print("Exiting...")
-                    print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     operation = "character"  
                     cur.close()
                     sys.exit()     
@@ -785,14 +837,16 @@ Enter 'exit' to exit utility""")
                 print("")
                 for table in tables:
                     print(table)
-                
+                    time.sleep(1)
+                    
                 print("") 
                 doperation = input("Enter table: ")
+                time.sleep(1)
                 if doperation == "exit":
                     print("")
-                    print("Exiting...")
-                    print("")
                     print("Closing connection...")
+                    print("")
+                    print("Exiting...")
                     operation = "character"  
                     cur.close()
                     sys.exit() 
@@ -816,11 +870,13 @@ Enter 'exit' to exit utility""")
                     print("Printing table records...")
                     for row in resultset:
                         print(row)
+                        time.sleep(1) 
                         
                     print("")
                     print("Select id to be deleted.")
                     print("")
                     pkey = input("Enter id: ")
+                    time.sleep(1)
                     if pkey == "exit":
                         print("")
                         print("Exiting...")
@@ -835,6 +891,7 @@ Enter 'exit' to exit utility""")
                                 delete from {doperation.lower()}
                                 where id = {pkey};"""
                         cur.execute(query)
+                        cur.commit()
                         print("Deleting record...")
                         print("")
                         # print(f"Database message: {resultset}")
@@ -849,10 +906,12 @@ Enter 'exit' to exit utility""")
                         print("")
                         for row in resultset:
                             print(row)
-                        print("")
-                        print("Exiting...")
+                            time.sleep(1)
+
                         print("")
                         print("Closing connection...")
+                        print("")
+                        print("Exiting...")
                         operation = "character"  
                         cur.close()
                         sys.exit()                  

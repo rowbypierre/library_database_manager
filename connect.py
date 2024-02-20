@@ -1,3 +1,4 @@
+import time
 # library work with Postgresql DB
 import psycopg2 
 # config function from created (local) config module
@@ -14,6 +15,7 @@ def connect():
         # connect to PostgreSQL server
         print("")
         print('Attempting to connect to PostgreSQL "library" database...')
+        time.sleep(2)
         conn = psycopg2.connect(**params)
 
         # cursor interact with databaase
@@ -22,12 +24,14 @@ def connect():
         # execute statement 
         print("")
         print('PostgresSQL database version: ')
+        time.sleep(2)
         cur.execute('select version();')
         
         # fetch results
         db_version = cur.fetchone()
         print("")
         print (db_version)
+        time.sleep(2)
         
         # close Postgres communication
         cur.close()
