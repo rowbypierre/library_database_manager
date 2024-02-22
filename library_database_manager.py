@@ -10,29 +10,31 @@ if __name__ == '__main__':
     os.system("clear")
     logon()
     
+    print()
+    print('Connecting to server: "localhost" database: "library"')
+    time.sleep(1)
     parms = config()
-    
-    print("")
-    print('Attempting to establish connection to server: "localhost" database: "library" ...')
-    time.sleep(.5)
-    
     conn = psycopg2.connect(**parms)
     cur = conn.cursor()
-    print("")
+    print()
+    print("Connection established...")
+    time.sleep(1)
+    os.system("clear")
+    print()
     print("Querying database version...")
-    print("")
-    time.sleep(.5)
-    
+    print()
+    time.sleep(1)
     cur.execute('select version();')
     db_version = cur.fetchone()
     db_version = str(db_version).replace("'","").replace(",","").replace(")","").replace("(","").strip()
-    print(f"PostgreSQL database version: {db_version}")
-    time.sleep(.5)
+    print(f"PostgreSQL version: {db_version}")
+    time.sleep(1)
+    os.system("clear")
   
     print("""
-Library Database Management System Utility
+Library Database Management System Utility (LDMSU)
     
-Utility functions include:
+LDMSU functions:
     1. Read reports/ stored queries
     2. Update record
     3. Create record
@@ -40,61 +42,70 @@ Utility functions include:
     
 Enter 'exit' to exit utility""")
     
-    print("")
+    print()
     time.sleep(.5)
     operation = input("Enter function (#): ")
     time.sleep(.5)
     if operation == "exit":
-        print("")
-        print("Exiting...")
+        print()
+        print("Exiting program...")
         cur.close()
         os.system("clear")
         sys.exit()      
-    
     elif operation.isdigit() == False:
-        print("")
+        print()
         print("Numeric value 1, 2, 3, or 4 not entered") 
-        print("")
+        print()
         print("Closing connection...")
+        print()
+        print("Exiting program...")
         cur.close()
-        print("")
-        print("Exiting...")
-    
+        cur.close()
+        os.system("clear")
+        sys.exit()
     else:
-        while operation.isdigit() == True:
-            
+        
+        while operation.isdigit() == True:    
             if int(operation) > 4 or int(operation) < 1:
                 os.system("clear")
-                print("")
-                print("Utility functions include:")
+                print()
+                print("LDMSU functions:")
                 print("1   Read reports/ stored queries")
                 print("2.  Update record")
                 print("3.  Create Record")
                 print("4.  Delete record")
-                print("")
+                print()
+                
                 operation = input("Enter function (#): ")
-                time.sleep(.25)
+                time.sleep(.5)
                 if operation == "exit":
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Closing connection...")
+                    print()
+                    print("Exiting program...")
+                    time.sleep(.5)
                     operation = "character"  
                     cur.close()
                     os.system("clear")
                     sys.exit()                       
                 elif operation.isdigit() == False:
-                    print("")
+                    print()
                     print("Enter numeric value 1, 2, 3, or 4") 
-                    print("")
+                    print()
                     print("Closing connection...")
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Exiting program...")
+                    time.sleep(.5)
+                    operation = "character"  
                     cur.close()
+                    os.system("clear")
+                    sys.exit()
                 
             elif int(operation) == 1:
                 os.system("clear")
-                print("")
+                print()
                 print("You've selected: 1. Execute query")
-                print("")
+                print()
                 print("Queries include: ")
                 print("1. Library catalog")
                 print("2. Catalog physical condition")
@@ -103,20 +114,24 @@ Enter 'exit' to exit utility""")
                 print("5. Book checkout durations")
                 print("6. Overdue returns")
                 print("7. Book fines summary")
-                print("")
+                print()
                 
                 qoperation = input("Enter number for desired query to be executed: ")
                 time.sleep(.5)
                 if qoperation == "exit":
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Closing connection...")
+                    print()
+                    print("Exiting program...")
+                    time.sleep(.5)
                     operation = "character"  
                     cur.close()
                     os.system("clear")
-                    sys.exit() 
-                                                              
+                    sys.exit()                                            
                 elif qoperation.isdigit() == True and int(qoperation) == 1: 
                     os.system("clear")                   
+                    print()
+                    print("Querying database...")
                     query = ''' 
                             select 		title "Title", isbn "ISBN", genre "Genre", condition "Condition"
                             from        books b
@@ -124,71 +139,85 @@ Enter 'exit' to exit utility""")
                                         left join conditions c on c.id = b.condition_id                   
                                         left join statuses s on s.id = b.status_id                   
                             order by	Genre, Title;'''
-                    print("")
-                    print("Quering database...")
+                    
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Title, ISBN, Genre, Book Condition)')                    
+                    header = '(Title, ISBN, Genre, Book Condition)'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)
+                    print()                    
                     for row in resultset:
                         print(row)
                         time.sleep(.25) 
-                        
+                    print()
+                    print(header)
+                    
+                    print()    
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
                             sys.exit()                       
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit()
                         else:
                             pass
                             
                     if coa[0] != 'y':   
                         os.system("clear")     
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
-                        cur.close() 
-                        os.system("clear")                 
-                        operation = "character"
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
+                        cur.close()
+                        os.system("clear")
+                        sys.exit()
                 
                 elif qoperation.isdigit() == True and int(qoperation) == 2:
                     os.system("clear")                    
+                    print()
+                    print("Querying database...")
                     query = ''' 
                             select      condition "Condition",			
                                         count(*) "Count",			
@@ -197,72 +226,85 @@ Enter 'exit' to exit utility""")
                                 		left join conditions c on c.id = b.condition_id        
                             group by 	condition
                             order by    "Count" desc, condition;'''
-                    print("")
-                    print("Quering database...")
+                    
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Condition, Count, Percent)')                    
+                    header = '(Condition, Count, Percent)'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)
+                    print()                    
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    
-                    print("")
+                    print()
+                    print(header)  
+                      
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
-                            sys.exit()                       
+                            sys.exit()                      
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit() 
                         else:
                             pass
                         
                     if coa[0] != 'y': 
                         os.system("clear")       
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"
+                        os.system("clear")
+                        sys.exit() 
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 3:   
                     os.system("clear")                 
+                    print()
+                    print("Querying database...")
                     query = ''' 
                             with x as (
                                 select 		--*,
@@ -283,72 +325,83 @@ Enter 'exit' to exit utility""")
                             group by    x."Book Title"
                             order by    x."Book Title";		
                             '''
-                    print("")
-                    print("Quering database...")
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Book Title, Author First Name, Author Last Name, Author MI)')                    
+                    header = '(Book Title, FName MI. LName)'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)   
+                    print()      
                     for row in resultset:
                         print(row)
                         time.sleep(.5)
+                    print()
+                    print(header)   
                     
-                    print("")
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
-                            sys.exit()                       
+                            sys.exit()                     
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit()
                         else:
                             pass
                         
                     if coa[0] != 'y':   
                         os.system("clear")     
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"
+                        os.system("clear")
+                        sys.exit()
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 4:
                     os.system("clear")                    
+                    print("Querying database...")
                     query = ''' 
                             with x as (
                                 select 		--*,
@@ -367,72 +420,84 @@ Enter 'exit' to exit utility""")
                             from 		x 
                             group by 	x."Book Title"
                             order by 	x."Book Title";'''
-                    print("")
-                    print("Quering database...")
+                    print()
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Book Title, Author First Name, Author Last Name, Author MI)')                    
+                    header = '(Book Title, Author First Name, Author Last Name, Author MI)' 
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)    
+                    print()            
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
+                    print()
+                    print(header)
                     
-                    print("")    
+                    print()    
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
-                            sys.exit()                       
+                            sys.exit()                      
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit()
                         else:
                             pass
                         
                     if coa[0] != 'y': 
                         os.system("clear")       
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"
+                        os.system("clear")
+                        sys.exit()
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 5:     
                     os.system("clear")  
+                    print("Querying database...")
                     query = ''' 
                             with x as (
 	                            select		*,
@@ -454,72 +519,84 @@ Enter 'exit' to exit utility""")
 			                            ("Return Date" - "Checkout Date") as "Days Loaned" 
                             from		x
                             order by	"Days Loaned" desc;'''
-                    print("")
-                    print("Quering database...")
+                    print()
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Book Title, Days Loaned)')                    
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    header = '(Book Title, Days Loaned)'
+                    print(header)
+                    print()                    
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
+                    print()
+                    print(header)
                     
-                    print("")
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
-                            sys.exit()                       
+                            sys.exit()                      
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit()
                         else:
                             pass
                         
                     if coa[0] != 'y': 
                         os.system("clear")       
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"
+                        os.system("clear")
+                        sys.exit()
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 6:     
                     os.system("clear")              
+                    print("Querying database...")
                     query = ''' 
                             with x as ( 
 	                            select 	concat(p.fname, ' ', p.lname) as "Patron",
@@ -540,72 +617,85 @@ Enter 'exit' to exit utility""")
 	                            from 		x 
 	                            where 		"Days Overdue" > 0
 	                            order by	"Days Overdue" desc;'''
-                    print("")
-                    print("Quering database...")
+                    print()
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Patron, Book, Checkout, Due, Returned, Days Overdue, Fine)')                    
+                    header = '(Patron, Book, Checkout, Due, Returned, Days Overdue, Fine)'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)                    
+                    print()
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
+                    print("")
+                    print(header)
                     
-                    print("")
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
                         options = [1, 2, 3, 4]
-                        print("")
+                        print()
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
                             sys.exit()                       
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit()
                         else:
                             pass
                         
                     if coa[0] != 'y':  
                         os.system("clear")      
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"
+                        os.system("clear")
+                        sys.exit()
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 7:   
                     os.system("clear")               
+                    print()
+                    print("Querying database...")
                     query = ''' 
                             with x as ( 
 	                            select 	*,
@@ -622,78 +712,89 @@ Enter 'exit' to exit utility""")
 	                            where 		"Days Overdue" > 0
 	                            group by	"Genre"
 	                            order by	"Genre";'''
-                    print("")
-                    print("Quering database...")
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    
-                    print("")
-                    print("Printing database result...")
-                    print("")
-                    print('(Genre, Fine (AVG))')                    
+                    header = '(Genre, Fine (AVG))'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)
+                    print()                    
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
+                    print()
+                    print(header)
                     
-                    print("")
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
+                        print()                        
                         options = [1, 2, 3, 4]
-                        print("")
                         operation = input("Enter function (#): ")
                         time.sleep(.5)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
                             print("Closing connection...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
                             operation = "character"  
                             cur.close()
                             os.system("clear")
-                            sys.exit()                       
+                            sys.exit()                      
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
+                            time.sleep(.5)
+                            operation = "character"  
                             cur.close()
+                            os.system("clear")
+                            sys.exit() 
                         else:
                             pass
                     
                     if coa[0] != 'y':
                         os.system("clear")        
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
+                        time.sleep(.5)
+                        operation = "character"  
                         cur.close()
-                        os.system("clear")                    
-                        operation = "character"               
+                        os.system("clear")
+                        sys.exit()               
                 
                 else:                    
                     print("Enter numeric value between 1 - 7")
+                    time.sleep(.5)
                                             
             elif int(operation) == 2:
                 os.system("clear")
-                print("")
+                print()
                 print("You've selected: 2. Update record")
-                print("")
+                print()
                 print("Querying database for tables...")
                 query ="""
                 select  --*,
@@ -711,22 +812,22 @@ Enter 'exit' to exit utility""")
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
                 
-                print("")
+                print()
                 print("Printing database tables...")
-                print("")
+                print()
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                     
-                print("") 
+                print() 
                 uoperation = input("Enter table: ")
                 time.sleep(.5)
                 if uoperation == "exit":
                     os.system("clear")
-                    print("")
+                    print()
                     print("Closing connection...")
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Exiting program...")
                     operation = "character"  
                     cur.close()
                     os.system("clear")
@@ -734,7 +835,7 @@ Enter 'exit' to exit utility""")
                                                               
                 elif uoperation.isdigit() == False and uoperation.lower() in tables:
                     os.system("clear")
-                    print("")
+                    print()
                     print("Querying database...")
                     query = f"""
                     select  string_agg(column_name, ' , ') as column_string
@@ -762,9 +863,9 @@ Enter 'exit' to exit utility""")
                     query = f"select * from {uoperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    print("")
+                    print()
                     print(f"Printing '{uoperation}' table records...")
-                    print("")
+                    print()
                     print(targetTemplate)
                     for row in resultset2:
                         formatted_row = list(row)
@@ -775,17 +876,17 @@ Enter 'exit' to exit utility""")
                         time.sleep(.25)
 
                         
-                    print("")
+                    print()
                     print("Unique key (id) from list above required to update record.")
-                    print("")
+                    print()
                     pkey = input("Enter id: ")
                     time.sleep(.5)
                     if pkey == "exit":
                         os.system("clear")
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
                         operation = "character"  
                         cur.close()
                         os.system("clear")
@@ -805,11 +906,11 @@ Enter 'exit' to exit utility""")
                             targetRecord = tuple(formatted_row)
                         
                         os.system("clear")
-                        print("")
+                        print()
                         print(f"Querying database, retrieving {uoperation} table definiton...")
-                        print("")
+                        print()
                         print("Fields:")
-                        print("")
+                        print()
                         print("'data field' : 'datatype'")
                         query = f"""
                         select 	column_name, data_type
@@ -830,20 +931,20 @@ Enter 'exit' to exit utility""")
                             datatypes.update({field : datatype})
                             columns.append(field)
                         
-                        print("")
-                        print("") 
+                        print()
+                        print() 
                         print("Record: ")
-                        print("")
+                        print()
                         print(targetTemplate)
                         print(targetRecord)    
-                        print("")
+                        print()
                         attribute = input("Enter field to update: ")
                         time.sleep(.5)
                         attribute = attribute.strip().lower()
                         
                         if attribute in columns:
                             os.system("clear")
-                            print("")
+                            print()
                             print(f"{attribute.capitalize()} field has datatype: '{datatypes.get(attribute)}'")
                             
                             intFields = []
@@ -891,12 +992,12 @@ Enter 'exit' to exit utility""")
                                 fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                                 tsFields.append(fieldx)    
                             
-                            print("")
+                            print()
                             print(targetTemplate)
                             print(targetRecord)    
                             
                             if ((attribute not in tsFields) and (attribute not in dateFields)): 
-                                print("")
+                                print()
                                 newValue = input(f"Enter new value for {attribute}: ")
                                 time.sleep(.5)
                                 if attribute not in intFields:
@@ -905,11 +1006,11 @@ Enter 'exit' to exit utility""")
                                 elif attribute in intFields: 
                                     newValue = int(newValue)
                             elif attribute in dateFields:
-                                print("")     
+                                print()     
                                 newValue = input(f"Provide value formatted as 'YYYY-MM-DD' for for field '{attribute}' : ")
                                 time.sleep(.5)
                             elif attribute in tsFields:
-                                print("")
+                                print()
                                 newValue = input(f"Provide value formatted as 'YYYY-MM-DD hh:mm:ss' for field '{attribute}' : ")
                                 time.sleep(.5)
                                     
@@ -921,9 +1022,9 @@ Enter 'exit' to exit utility""")
                                     commit; """
                             cur.execute(query)
                             os.system("clear")
-                            print("")
+                            print()
                             print("Updating record...")
-                            print("")
+                            print()
                             # print(f"Database message: {resultset}")
                             print("Querying updated record...")
                             query = f"""select id, {attribute}, * from {uoperation} where id = {pkey};"""
@@ -936,35 +1037,35 @@ Enter 'exit' to exit utility""")
                                         formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
                                 resultset = tuple(formatted_row)
                                 
-                            print("")
+                            print()
                             print("Printing updated record...")           
-                            print("")
+                            print()
                             print(resultset)
                             
-                            print("")
+                            print()
                             print("Would you like to perform another task?")
-                            print("")
+                            print()
                             coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                             time.sleep(.5)
                             if coa[0] == 'y':
                                 os.system("clear")
-                                print("")
-                                print("Utility functions include:")
+                                print()
+                                print("LDMSU functions:")
                                 print("1.  Reports/ stored queries")
                                 print("2.  Update record")
                                 print("3.  Create Record")
                                 print("4.  Delete record")
-                                print("")
+                                print()
                                 print("Enter 'exit' to exit utility")
                                 options = [1, 2, 3, 4]
-                                print("")
+                                print()
                                 operation = input("Enter function (#): ")
                                 time.sleep(.5)
                                 if operation == "exit":
                                     os.system("clear")
-                                    print("")
-                                    print("Exiting...")
-                                    print("")
+                                    print()
+                                    print("Exiting program...")
+                                    print()
                                     print("Closing connection...")
                                     operation = "character"  
                                     cur.close()
@@ -972,34 +1073,34 @@ Enter 'exit' to exit utility""")
                                     sys.exit()                       
                                 elif ((operation.isdigit() == False) or (int(operation) not in options)):
                                     os.system("clear")
-                                    print("")
-                                    print("You did not enter numeric value 1, 2, 3, or 4") 
-                                    print("")
+                                    print()
+                                    print("Numeric value (1, 2, 3, 4) not entered") 
+                                    print()
                                     print("Closing connection...")
-                                    print("")
-                                    print("Exiting...")
+                                    print()
+                                    print("Exiting program...")
                                     cur.close()
                                 else:
                                     pass
                             
                             if coa[0] != 'y':  
                                 os.system("clear")      
-                                print("")
+                                print()
                                 print("Closing connection...")
-                                print("")
-                                print("Exiting...")
+                                print()
+                                print("Exiting program...")
                                 cur.close()
                                 os.system("clear")                    
                                 operation = "character"
                         
                         else:
                             os.system("clear") 
-                            print("")
+                            print()
                             print ("Table field enter does not exist")                           
-                            print("")
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
                             operation = "character"  
                             cur.close()
                             os.system("clear")
@@ -1007,9 +1108,9 @@ Enter 'exit' to exit utility""")
                             
             elif int(operation) == 3:
                 os.system("clear")
-                print("")
+                print()
                 print("You've selected: 3. Insert record")
-                print("")
+                print()
                 print("Select table:")
                 query ="""
                 select  --*,
@@ -1019,8 +1120,8 @@ Enter 'exit' to exit utility""")
                         and table_schema = 'public'
                         and table_name not like '%book_authors%';
                 """
-                print("")
-                print("Quering database tables...")
+                print()
+                print("Querying database tables...")
                 cur.execute(query)
                 resultset = cur.fetchall()
                 
@@ -1030,22 +1131,22 @@ Enter 'exit' to exit utility""")
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
                 
-                print("")
+                print()
                 print("Printing database tables...")
-                print("")
+                print()
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                     
-                print("") 
+                print() 
                 ioperation = input("Enter table: ")
                 time.sleep(.5)
                 if ioperation == "exit":
                     os.system("clear")
-                    print("")
+                    print()
                     print("Closing connection...")
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Exiting program...")
                     operation = "character"  
                     cur.close()
                     os.system("clear")
@@ -1099,7 +1200,7 @@ Enter 'exit' to exit utility""")
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         tsFields.append(fieldx)
                             
-                    # print("")
+                    # print()
                     # print(f"Querying database for fields in {ioperation} ...")
                     # query = f"""
                     #         select  string_agg(column_name, ' ,') as column_string
@@ -1108,11 +1209,11 @@ Enter 'exit' to exit utility""")
                     #         """
                     # cur.execute(query)
                     # resultset4 = cur.fetchall()
-                    # print("")
+                    # print()
                     # print(resultset4)
                     
                     os.system("clear")
-                    print("")
+                    print()
                     print(f"Querying database for fields and datatypes in {ioperation} ...")
                     query = f"""
                             select 	column_name, data_type
@@ -1162,10 +1263,10 @@ Enter 'exit' to exit utility""")
                         fieldx = fieldx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                         counter = counter + 1 
                         if ((fieldx not in tsFields) and (fieldx not in dateFields) and (fieldx.find('modified') < 0) and (fieldx.find('created') < 0)) or (fieldx in dateFields2):
-                            print("")
+                            print()
                             if fieldx in dateFields2:
                                 print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
-                                print("")
+                                print()
                                 fieldValue = input(f"Provide value formatted as 'YYYY-MM-DD' for field '{fieldx}' : ")
                                 time.sleep(.5)
                             if fieldx == 'id':
@@ -1180,7 +1281,7 @@ Enter 'exit' to exit utility""")
                                 
                             if (fieldx not in dateFields2) and (fieldx != 'id'):
                                 print(f"{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
-                                print("")
+                                print()
                                 fieldValue = input(f"Provide value for field '{fieldx}' : ")
                                 time.sleep(.5)
                                 
@@ -1211,15 +1312,15 @@ Enter 'exit' to exit utility""")
                         if counter == columnCount:
                             insertQuery = insertQuery + ' ' + fieldValue + ') ;'
                             columnClause = columnClause + ' ' + fieldx + ')'
-                            print("")
+                            print()
                             
                     insertQuery = insertQuery.replace('columnClause', f'{columnClause}')
                     cur.execute(insertQuery)
                     conn.commit()
                     os.system("clear")
-                    print("")
+                    print()
                     print("Creating record...")
-                    print("")
+                    print()
                     print("Querying new record...")
                     cur.execute(confirmQuery)
                     resultset = cur.fetchall()
@@ -1230,35 +1331,35 @@ Enter 'exit' to exit utility""")
                                 formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
                         resultset = tuple(formatted_row)
                         
-                    print("")
+                    print()
                     print("Printing new record...")           
-                    print("")
+                    print()
                     print(resultset)
                     
-                    print("")
+                    print()
                     print("Would you like to perform another task?")
-                    print("")
+                    print()
                     coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                     time.sleep(.5)
                     if coa[0] == 'y':
                         os.system("clear")
-                        print("")
-                        print("Utility functions include:")
+                        print()
+                        print("LDMSU functions:")
                         print("1.  Reports/ stored queries")
                         print("2.  Update record")
                         print("3.  Create Record")
                         print("4.  Delete record")
-                        print("")
+                        print()
                         print("Enter 'exit' to exit utility")
                         options = [1, 2, 3, 4]
-                        print("")
+                        print()
                         operation = input("Enter function (#): ")
                         time.sleep(.25)
                         if operation == "exit":
                             os.system("clear")
-                            print("")
-                            print("Exiting...")
-                            print("")
+                            print()
+                            print("Exiting program...")
+                            print()
                             print("Closing connection...")
                             operation = "character"  
                             cur.close()
@@ -1266,31 +1367,31 @@ Enter 'exit' to exit utility""")
                             sys.exit()                       
                         elif ((operation.isdigit() == False) or (int(operation) not in options)):
                             os.system("clear")
-                            print("")
-                            print("You did not enter numeric value 1, 2, 3, or 4") 
-                            print("")
+                            print()
+                            print("Numeric value (1, 2, 3, 4) not entered") 
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
                             cur.close()
                         else:
                             pass
                     
                     if coa[0] != 'y':
                         os.system("clear")        
-                        print("")
+                        print()
                         print("Closing connection...")
-                        print("")
-                        print("Exiting...")
+                        print()
+                        print("Exiting program...")
                         cur.close()
                         os.system("clear")                    
                         operation = "character"   
                             
             elif int(operation) == 4:
                 os.system("clear")
-                print("")
+                print()
                 print("You've selected: 4. Delete record")
-                print("")
+                print()
                 print("Select source table:")
                 query ="""
                 select  --*,
@@ -1300,8 +1401,8 @@ Enter 'exit' to exit utility""")
                         and table_schema = 'public'
                         and table_name not like '%book_authors%';
                 """
-                print("")
-                print("Quering database...")
+                print()
+                print("Querying database...")
                 cur.execute(query)
                 resultset = cur.fetchall()
                 tables = []                    
@@ -1310,22 +1411,22 @@ Enter 'exit' to exit utility""")
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
                 
-                print("")
+                print()
                 print("Printing database tables...")
-                print("")
+                print()
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                     
-                print("") 
+                print() 
                 doperation = input("Enter table: ")
                 time.sleep(.5)
                 if doperation == "exit":
                     os.system("clear")
-                    print("")
+                    print()
                     print("Closing connection...")
-                    print("")
-                    print("Exiting...")
+                    print()
+                    print("Exiting program...")
                     operation = "character"  
                     cur.close()
                     os.system("clear")
@@ -1333,7 +1434,7 @@ Enter 'exit' to exit utility""")
                                                               
                 elif doperation.isdigit() == False and doperation.lower() in tables:
                     os.system("clear")
-                    print("")
+                    print()
                     print("Querying database for table definition...")
                     query = f"""
                     select  string_agg(column_name, ' , ') as column_string
@@ -1361,9 +1462,9 @@ Enter 'exit' to exit utility""")
                     query = f"select * from {doperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    print("")
+                    print()
                     print(f"Printing '{doperation}' table records...")
-                    print("")
+                    print()
                     print(resultset)
                     for row in resultset2:
                         formatted_row = list(row)
@@ -1374,18 +1475,18 @@ Enter 'exit' to exit utility""")
                         time.sleep(.25)
                     print(resultset) 
                         
-                    print("")
+                    print()
                     print("Select unique identifier (id) of record to be deleted.")
-                    print("")
+                    print()
                     print("Enter 'exit' to exit utility")
-                    print("")
+                    print()
                     pkey = input("Enter id: ")
                     time.sleep(.5)
                     if pkey == "exit":
                         os.system("clear")
-                        print("")
-                        print("Exiting...")
-                        print("")
+                        print()
+                        print("Exiting program...")
+                        print()
                         print("Closing connection...")
                         operation = "character"  
                         cur.close()
@@ -1395,14 +1496,14 @@ Enter 'exit' to exit utility""")
                     elif pkey.isdigit() == True and int(pkey) > 0:
                         os.system("clear")
                         pkey = int(pkey)
-                        print("")
+                        print()
                         query =f"""
                                 delete from {doperation.lower()}
                                 where id = {pkey};"""
                         cur.execute(query)
                         conn.commit()
                         print("Deleting record...")
-                        print("")
+                        print()
                         # print(f"Database message: {resultset}")
                         print("Querying table records...")
                         query = f"""select * from {doperation} 
@@ -1410,9 +1511,9 @@ Enter 'exit' to exit utility""")
                                             and (id > ({pkey} - 5));"""
                         cur.execute(query)
                         resultset = cur.fetchall()
-                        print("")
+                        print()
                         print("Printing records (with id greater (+ 5) or less (- 5) than deleted record)...")           
-                        print("")
+                        print()
                         for row in resultset:
                             formatted_row = list(row)
                             for i, item in enumerate(formatted_row):
@@ -1421,30 +1522,30 @@ Enter 'exit' to exit utility""")
                             print(tuple(formatted_row))
                             time.sleep(.25)
 
-                        print("")
+                        print()
                         print("Would you like to perform another task?")
-                        print("")
+                        print()
                         coa = input("Enter 'y' for yes 'n' for no: ").strip().casefold()
                         time.sleep(.5)
                         if coa[0] == 'y':
                             os.system("clear")
-                            print("")
-                            print("Utility functions include:")
+                            print()
+                            print("LDMSU functions:")
                             print("1.  Reports/ stored queries")
                             print("2.  Update record")
                             print("3.  Create Record")
                             print("4.  Delete record")
-                            print("")
+                            print()
                             print("Enter 'exit' to exit utility")
                             options = [1, 2, 3, 4]
-                            print("")
+                            print()
                             operation = input("Enter function (#): ")
                             time.sleep(.5)
                             if operation == "exit":
                                 os.system("clear")
-                                print("")
-                                print("Exiting...")
-                                print("")
+                                print()
+                                print("Exiting program...")
+                                print()
                                 print("Closing connection...")
                                 operation = "character"  
                                 cur.close()
@@ -1452,11 +1553,11 @@ Enter 'exit' to exit utility""")
                                 sys.exit()                       
                             elif ((operation.isdigit() == False) or (int(operation) not in options)):
                                 os.system("clear")
-                                print("")
-                                print("You did not enter numeric value 1, 2, 3, or 4") 
-                                print("")
-                                print("Exiting...")
-                                print("")
+                                print()
+                                print("Numeric value (1, 2, 3, 4) not entered") 
+                                print()
+                                print("Exiting program...")
+                                print()
                                 print("Closing connection...")
                                 cur.close()
                             else:
@@ -1464,10 +1565,10 @@ Enter 'exit' to exit utility""")
                         
                         if coa[0] != 'y':     
                             os.system("clear")   
-                            print("")
+                            print()
                             print("Closing connection...")
-                            print("")
-                            print("Exiting...")
+                            print()
+                            print("Exiting program...")
                             cur.close()
                             os.system("clear")                    
                             operation = "character"                 
