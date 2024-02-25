@@ -21,7 +21,16 @@ def menu():
     os.system("clear")
     print(menuMessage)
     time.sleep(1)
-    
+
+def ouput_dt_convert(resultset):
+    for row in resultset:
+        formatted_row = list(row)
+        for i, item in enumerate(formatted_row):
+            if isinstance(item, datetime):
+                formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
+        print(tuple(formatted_row))
+        time.sleep(.25)
+
 if __name__ == '__main__':
     os.system("clear")
     logon()
@@ -586,13 +595,8 @@ if __name__ == '__main__':
                     print()
                     print(targetTemplate)
                     print()
-                    for row in resultset2:
-                        formatted_row = list(row)
-                        for i, item in enumerate(formatted_row):
-                            if isinstance(item, datetime):
-                                formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
-                        print(tuple(formatted_row))
-                        time.sleep(.25)
+                    ouput_dt_convert(resultset2)
+                    time.sleep(.25)
                     print()
                     print(targetTemplate)
                         
@@ -1092,13 +1096,7 @@ if __name__ == '__main__':
                     print()
                     print(resultset_mod)
                     print()
-                    for row in resultset2:
-                        formatted_row = list(row)
-                        for i, item in enumerate(formatted_row):
-                            if isinstance(item, datetime):
-                                formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
-                        print(tuple(formatted_row))
-                        time.sleep(.25)
+                    ouput_dt_convert(resultset2)
                     print()
                     print(resultset_mod) 
                         
@@ -1139,14 +1137,7 @@ if __name__ == '__main__':
                         print("Printing records (with id +/- 5 than deleted record id):")        
                         time.sleep(1)   
                         print()
-                        for row in resultset:
-                            formatted_row = list(row)
-                            for i, item in enumerate(formatted_row):
-                                if isinstance(item, datetime):
-                                    formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
-                            print(tuple(formatted_row))
-                            time.sleep(.25)
-
+                        ouput_dt_convert(resultset)
                         print()
                         print("Return to menu?")
                         time.sleep(.5)
