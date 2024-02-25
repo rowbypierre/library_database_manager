@@ -993,8 +993,11 @@ if __name__ == '__main__':
                     os.system("clear")
                     print()
                     print("Creating record...")
+                    time.sleep(1)
                     print()
                     print("Querying new record...")
+                    time.sleep(1)
+                    os.system("clear")
                     cur.execute(confirmQuery)
                     resultset = cur.fetchall()
                     for row in resultset:
@@ -1005,10 +1008,11 @@ if __name__ == '__main__':
                         resultset = tuple(formatted_row)
                         
                     print()
-                    print("Printing new record...")    
-                    time.sleep(1)       
+                    print("Printing new record:")    
+                    time.sleep(1)      
                     print()
                     print(resultset)
+                    time.sleep(1)
                     
                     print()
                     print("Return to menu?")
@@ -1101,7 +1105,7 @@ if __name__ == '__main__':
                     print(resultset_mod) 
                         
                     print()
-                    print("Select unique identifier (id) of record to be deleted.")
+                    print("Unique identifier (id) of record to be deleted required.")
                     time.sleep(.5)
                     print()
                     print("Enter 'exit' to exit utility")
