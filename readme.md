@@ -1,5 +1,3 @@
-https://www.dropbox.com/scl/fi/ahn9r5v5hkjnqhml7eyqx/library-db-manager-test-20240225.mp4?rlkey=ghi53bxhc2j7cl3rmqlx4kudr&dl=0
-
 # Project Title
 Library Database Manager
 
