@@ -103,6 +103,7 @@ if __name__ == '__main__':
                 print("5. Book checkout durations")
                 print("6. Overdue returns")
                 print("7. Book fines summary")
+                print("8. Monthly loans # (time series)")
                 print()
                 
                 qoperation = input("Enter # (1-7) for query: ")
@@ -517,8 +518,78 @@ if __name__ == '__main__':
                     if coa[0] != 'y':
                         end()              
                 
+                elif qoperation.isdigit() == True and int(qoperation) == 8:   
+                    os.system("clear")               
+                    print()
+                    print("Querying database...")
+                    time.sleep(1)
+                    query = ''' 
+                            with x as (
+                                select 	date_part('year', c.date) "Year", 
+                                        date_part('month', c.date) "Month #", 
+                                        to_char(c.date, 'Month') "Month",
+                                        date_part('month', (c.date - interval '1 month')) "Previous Month #",
+                                        count(*) as "Loans"
+                                from 	loans
+                                        join returns r on r.id = loans.return_id
+                                        join checkouts c on c.id = loans.checkout_id
+                                group by date_part('year', c.date), date_part('month', c.date), date_part('month', (c.date - interval '1 month')), to_char(c.date, 'Month')
+                                order by	"Year", "Month #" desc
+                            )
+
+                            select 	  "Year"
+                                    , "Month"
+                                    , "Loans" as "# of Loans"
+                                    , case
+                                        when x2."Loans" - (select x."Loans" from x where x."Month #" = x2."Previous Month #") is null 
+                                            then '0.00 %'
+                                        else   
+                                            concat(
+                                                cast (((
+                                                    round(((
+                                                        cast(x2."Loans" - (select x."Loans" from x where x."Month #" = x2."Previous Month #") as numeric)) / x2."Loans"), 2) * 100)) as text), ' %')
+                                        end as "Growth (Prev. Month)"
+                            from	x as x2 
+                            ; '''
+                    cur.execute(query)
+                    resultset = cur.fetchall()
+                    header = '(Year, Month, # of Loans, Growth (Prev. Month))'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)
+                    print()                    
+                    for row in resultset:
+                        print(row)
+                        time.sleep(.25)
+                    print()
+                    print(header)
+                    
+                    print()
+                    print("Return to menu?")
+                    time.sleep(.5)
+                    print()
+                    coa = input("Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    time.sleep(.5)
+                    if coa[0] == 'y':
+                        os.system("clear")
+                        menu()                       
+                        options = [1, 2, 3, 4]
+                        operation = input("Enter function #: ")
+                        time.sleep(.5)
+                        if operation == "exit":
+                            end()                     
+                        elif ((operation.isdigit() == False) or (int(operation) not in options)):
+                            end() 
+                        else:
+                            pass
+                    
+                    if coa[0] != 'y':
+                        end()  
                 else:                    
-                    print("Enter numeric value between 1 - 7")
+                    print("Enter numeric value between 1 - 8")
                     time.sleep(.5)
                                             
             elif int(operation) == 2:
