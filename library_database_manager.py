@@ -104,6 +104,7 @@ if __name__ == '__main__':
                 print("6. Overdue returns")
                 print("7. Book fines summary")
                 print("8. Monthly loans # (time series)")
+                print("9. Patron Activity")
                 print()
                 
                 qoperation = input("Enter # (1-7) for query: ")
@@ -588,8 +589,88 @@ if __name__ == '__main__':
                     
                     if coa[0] != 'y':
                         end()  
+                
+                elif qoperation.isdigit() == True and int(qoperation) == 9:   
+                    os.system("clear")               
+                    print()
+                    print("Querying database...")
+                    time.sleep(1)
+                    query = ''' 
+                            select 		l.patron_id "ID", concat(p.fname, ' ', p.lname) "Name"
+                                        , round(avg(fine), 2) "Fines (AVG)"
+                                        , count(comments_neg.id) "# Negative Comments"
+                                        , count(comments_pos.id) "# Positive Comments"
+                                        , count(overdue.id) "# Overdue Returns"
+                                        , count(early_returns.id) "# Early Returns"
+                                        , fav.genre "Favorite Genre"
+                            from 		loans l
+                                        left join patrons p on l.patron_id = p.id
+                                        left join ( select 	fine, id from 	returns ) fines on fines.id = l.return_id
+                                        left join ( select 	 id, comment
+                                                    from 	returns 
+                                                    where 	comment like '%late%'
+                                                            or comment like '%damage%'
+                                                            or comment like 'lost'
+                                                            or comment like '%missing%' ) comments_neg  on comments_neg.id = l.return_id
+                                        left join ( select 	id, comment
+                                                    from 	returns 
+                                                    where 	comment not like '%late%'
+                                                            and comment not like '%damage%'
+                                                            and comment not like '%lost%'
+                                                            and comment not like '%missing%' ) comments_pos on comments_pos.id = l.return_id		
+                                        left join ( select 	id, overdue from 	returns where 	overdue = true) overdue on overdue.id = l.return_id	
+                                        left join ( select  id from returns where 	comment like '%early%' ) early_returns on early_returns.id = l.return_id	
+                                        left join ( select 	patron_id, genre		
+                                                    from		(select 	*, row_number() over(partition by patron_id, genre order by count desc) "copy"
+                                                                from 		(select 	count(*) "count", patron_id, genre
+                                                                            from 		loans l
+                                                                                        join books b on b.id = l.book_id
+                                                                                        join genres g on g.id = b.genre_id 	
+                                                                            group by 	patron_id, genre) x) y
+                                                    where 	copy = 1 )fav on fav.patron_id = l.patron_id				
+                            group by  	l.patron_id, concat(p.fname, ' ', p.lname), fav.genre 
+                            order by 	"Favorite Genre", "ID"; 
+                            ; '''
+                    cur.execute(query)
+                    resultset = cur.fetchall()
+                    header = '(ID, Name, Fines (AVG), # of Negative Comments, # of Positive Comments, Overdue Returns, # of Early Returns, Favorite Genre)'
+                    print()
+                    print("Printing resultset...")
+                    time.sleep(1)
+                    os.system('clear')
+                    print()
+                    print(header)
+                    print()                    
+                    for row in resultset:
+                        print(row)
+                        time.sleep(.25)
+                    print()
+                    print(header)
+                    
+                    print()
+                    print("Return to menu?")
+                    time.sleep(.5)
+                    print()
+                    coa = input("Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    time.sleep(.5)
+                    if coa[0] == 'y':
+                        os.system("clear")
+                        menu()                       
+                        options = [1, 2, 3, 4]
+                        operation = input("Enter function #: ")
+                        time.sleep(.5)
+                        if operation == "exit":
+                            end()                     
+                        elif ((operation.isdigit() == False) or (int(operation) not in options)):
+                            end() 
+                        else:
+                            pass
+                    
+                    if coa[0] != 'y':
+                        end() 
+                        
                 else:                    
-                    print("Enter numeric value between 1 - 8")
+                    print("Enter numeric value between 1 - 9")
                     time.sleep(.5)
                                             
             elif int(operation) == 2:
