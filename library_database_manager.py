@@ -21,7 +21,7 @@ def clear():
     
 def menu():
     clear()
-    print(f"\n {menuMessage}")
+    print(f"\n{menuMessage}")
     time.sleep(1.5)
 
 def ouput_dt_convert(resultset):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     clear()
     logon()
     
-    print('\n Connecting to server: "localhost" database: "library"')
+    print('\nConnecting to server: "localhost" database: "library"')
     time.sleep(1.5)
     parms = config()
     conn = psycopg2.connect(**parms)
@@ -46,35 +46,35 @@ if __name__ == '__main__':
     def end():
         clear()
         
-        print("\n Closing connection...")
+        print("\nClosing connection...")
         time.sleep(1.5)
         
-        print("\n Exiting program...")
+        print("\nExiting program...")
         time.sleep(1.5)
         cur.close()
         clear()
         sys.exit()
     
-    print("\n Connection established...")
+    print("\nConnection established...")
     time.sleep(1.5)
     clear()
     
-    print("\n Querying database version...")
+    print("\nQuerying database version...")
     time.sleep(1.5)
     cur.execute('select version();')
     db_version = cur.fetchone()
     db_version = str(db_version).replace("'","").replace(",","").replace(")","").replace("(","").strip()
-    print(f"\n  PostgreSQL version: {db_version}")
+    print(f"\n PostgreSQL version: {db_version}")
     time.sleep(1.5)
     
     menu()
     
-    operation = input("\n Enter function #: ")
+    operation = input("\nEnter function #: ")
     time.sleep(.75)
     if operation == "exit":
         end()   
     elif operation.isdigit() == False: 
-        print("\n Numeric value not entered") 
+        print("\nNumeric value not entered") 
         time.sleep(1.5)
         end()
     else:
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         while operation.isdigit() == True:    
             if int(operation) > 4 or int(operation) < 1:
                 menu()
-                operation = input("\n Enter function #: ")
+                operation = input("\nEnter function #: ")
                 time.sleep(.75)
                 if operation == "exit":
                     end()                      
@@ -90,9 +90,9 @@ if __name__ == '__main__':
                     end()
             elif int(operation) == 1:
                 clear()
-                print("\n Selection: 1. Execute query")
+                print("\nSelection: 1. Execute query")
                 time.sleep(.75)       
-                print("\n Queries include: ")
+                print("\nQueries include: ")
                 print("1. Library catalog")
                 print("2. Catalog physical condition")
                 print("3. Available books")
@@ -103,13 +103,13 @@ if __name__ == '__main__':
                 print("8. Monthly loans # (time series)")
                 print("9. Patron Activity")
                 
-                qoperation = input("\n Enter # (1-9) for query: ")
+                qoperation = input("\nEnter # (1-9) for query: ")
                 time.sleep(.75)
                 if qoperation == "exit":
                     end()                                            
                 elif qoperation.isdigit() == True and int(qoperation) == 1: 
                     clear()                   
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             select 		title "Title", isbn "ISBN", genre "Genre", condition "Condition"
@@ -121,23 +121,23 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Title, ISBN, Genre, Book Condition)'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25) 
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -150,7 +150,7 @@ if __name__ == '__main__':
                 
                 elif qoperation.isdigit() == True and int(qoperation) == 2:
                     clear()                    
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             select      condition "Condition",			
@@ -164,23 +164,23 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Condition, Count, Percent)'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")  
+                    print(f"\n{header} \n")  
                       
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -193,7 +193,7 @@ if __name__ == '__main__':
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 3:   
                     clear()                 
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as (
@@ -218,27 +218,27 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Book Title, FName MI. LName)'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")   
+                    print(f"\n{header} \n")   
                           
                     for row in resultset:
                         print(row)
                         time.sleep(.75)
                     
-                    print(f"\n {header} \n")   
+                    print(f"\n{header} \n")   
                     
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
                     
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                    
@@ -252,7 +252,7 @@ if __name__ == '__main__':
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 4:
                     clear()                    
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as (
@@ -276,24 +276,24 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Book Title, Author First Name, Author Last Name, Author MI)' 
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")    
+                    print(f"\n{header} \n")    
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -306,7 +306,7 @@ if __name__ == '__main__':
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 5:     
                     clear()  
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as (
@@ -331,25 +331,25 @@ if __name__ == '__main__':
                             order by	"Days Loaned" desc;'''
                     cur.execute(query)
                     resultset = cur.fetchall()
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
                     header = '(Book Title, Days Loaned)'
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -363,7 +363,7 @@ if __name__ == '__main__':
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 6:     
                     clear()              
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as ( 
@@ -388,25 +388,25 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Patron, Book, Checkout, Due, Returned, Days Overdue, Fine)'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")                    
+                    print(f"\n{header} \n")                    
                     
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -419,7 +419,7 @@ if __name__ == '__main__':
                     
                 elif qoperation.isdigit() == True and int(qoperation) == 7:   
                     clear()               
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as ( 
@@ -440,25 +440,25 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Genre, Fine (AVG))'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()                       
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -472,7 +472,7 @@ if __name__ == '__main__':
                 
                 elif qoperation.isdigit() == True and int(qoperation) == 8:   
                     clear()               
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             with x as (
@@ -505,24 +505,24 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(Year, Month, # of Loans, Growth (Prev. Month))'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()                       
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -536,7 +536,7 @@ if __name__ == '__main__':
                 
                 elif qoperation.isdigit() == True and int(qoperation) == 9:   
                     clear()               
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     query = ''' 
                             select 		l.patron_id "ID", concat(p.fname, ' ', p.lname) "Name"
@@ -577,24 +577,24 @@ if __name__ == '__main__':
                     cur.execute(query)
                     resultset = cur.fetchall()
                     header = '(ID, Name, Fines (AVG), # of Negative Comments, # of Positive Comments, Overdue Returns, # of Early Returns, Favorite Genre)'
-                    print("\n Printing resultset...")
+                    print("\nPrinting resultset...")
                     time.sleep(1.5)
                     os.system('clear')
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     for row in resultset:
                         print(row)
                         time.sleep(.25)
-                    print(f"\n {header} \n")
+                    print(f"\n{header} \n")
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         clear()
                         menu()                       
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.75)
                         if operation == "exit":
                             end()                     
@@ -607,14 +607,14 @@ if __name__ == '__main__':
                         end() 
                         
                 else:                    
-                    print("\n Enter numeric value between 1 - 9")
+                    print("\nEnter numeric value between 1 - 9")
                     time.sleep(.75)
                                             
             elif int(operation) == 2:
                 clear()
-                print("\n Selection: 2. Update record")
+                print("\nSelection: 2. Update record")
                 time.sleep(.75)
-                print("\n Querying database tables...")
+                print("\nQuerying database tables...")
                 query ="""
                 select  --*,
                         table_name
@@ -630,19 +630,19 @@ if __name__ == '__main__':
                     rowx = ''.join(row)
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
-                print("\n Printing tables: \n")
+                print("\nPrinting tables: \n")
                 time.sleep(1.5)
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                     
-                uoperation = input("\n Enter table: ")
+                uoperation = input("\nEnter table: ")
                 time.sleep(.75)
                 if uoperation == "exit":
                     end()
                 elif uoperation.isdigit() == False and uoperation.lower() in tables:
                     clear()
-                    print("\n Querying database...")
+                    print("\nQuerying database...")
                     time.sleep(1.5)
                     clear()
                     query = f"""
@@ -670,16 +670,16 @@ if __name__ == '__main__':
                     query = f"select * from {uoperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    print(f"\n Printing '{uoperation}' table records:")
+                    print(f"\nPrinting '{uoperation}' table records:")
                     time.sleep(1.5)
-                    print(f"\n {targetTemplate} \n")
+                    print(f"\n{targetTemplate} \n")
                     ouput_dt_convert(resultset2)
                     time.sleep(.25)
-                    print(f"\n {targetTemplate} \n")
-                    print("\n Unique identifier (id) from above required.")
+                    print(f"\n{targetTemplate} \n")
+                    print("\nUnique identifier (id) from above required.")
                     time.sleep(.75)
                     
-                    pkey = input("\n Enter id: ")
+                    pkey = input("\nEnter id: ")
                     time.sleep(.75)
                     if pkey == "exit":
                         end()
@@ -695,11 +695,11 @@ if __name__ == '__main__':
                                     formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
                             targetRecord = tuple(formatted_row)
                         clear()
-                        print(f"\n Querying database, retrieving {uoperation} table definiton...")
+                        print(f"\nQuerying database, retrieving {uoperation} table definiton...")
                         time.sleep(1.5)
-                        print("\n Fields:")
+                        print("\nFields:")
                         time.sleep(.75)
-                        print("\n 'data field' : 'datatype'")
+                        print("\n'data field' : 'datatype'")
                         query = f"""
                         select 	column_name, data_type
                         from 	information_schema.columns
@@ -719,18 +719,18 @@ if __name__ == '__main__':
                             time.sleep(.25)
                             datatypes.update({field : datatype})
                             columns.append(field)
-                        print("\n \n Record: ")
+                        print("\n\nRecord: ")
                         time.sleep(.75)
-                        print(f"\n {targetTemplate}")
+                        print(f"\n{targetTemplate}")
                         print(targetRecord)
                         time.sleep(.25)    
                         
-                        attribute = input("\n Enter field to update: ")
+                        attribute = input("\nEnter field to update: ")
                         time.sleep(.75)
                         attribute = attribute.strip().lower()
                         if attribute in columns:
                             clear()
-                            print(f"\n {attribute.capitalize()} field has datatype: '{datatypes.get(attribute)}'")
+                            print(f"\n{attribute.capitalize()} field has datatype: '{datatypes.get(attribute)}'")
                             
                             intFields = []
                             query = """
@@ -778,11 +778,11 @@ if __name__ == '__main__':
                                 tsFields.append(fieldx)    
                             
                             
-                            print(f"\n {targetTemplate}")
+                            print(f"\n{targetTemplate}")
                             print(targetRecord)    
                             
                             if ((attribute not in tsFields) and (attribute not in dateFields)): 
-                                newValue = input(f"\n Enter new value for {attribute}: ")
+                                newValue = input(f"\nEnter new value for {attribute}: ")
                                 time.sleep(.75)
                                 if attribute not in intFields:
                                     newValue =  newValue.strip().replace("'", "''")
@@ -791,11 +791,11 @@ if __name__ == '__main__':
                                     newValue = int(newValue)
                            
                             elif attribute in dateFields:
-                                newValue = input(f"\n Provide value formatted as 'YYYY-MM-DD' for field '{attribute}' : ")
+                                newValue = input(f"\nProvide value formatted as 'YYYY-MM-DD' for field '{attribute}' : ")
                                 time.sleep(.75)
                             
                             elif attribute in tsFields:
-                                newValue = input(f"\n Provide value formatted as 'YYYY-MM-DD hh:mm:ss' for field '{attribute}' : ")
+                                newValue = input(f"\nProvide value formatted as 'YYYY-MM-DD hh:mm:ss' for field '{attribute}' : ")
                                 time.sleep(.75)
                                     
                             query =f"""
@@ -806,9 +806,9 @@ if __name__ == '__main__':
                                     commit; """
                             cur.execute(query)
                             clear()
-                            print("\n Updating record...")
+                            print("\nUpdating record...")
                             time.sleep(1.5) 
-                            print("\n Querying updated record...")
+                            print("\nQuerying updated record...")
                             time.sleep(1.5)
                             clear()
                             query = f"""select * from {uoperation} where id = {pkey};"""
@@ -820,20 +820,20 @@ if __name__ == '__main__':
                                     if isinstance(item, datetime):
                                         formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
                                 resultset = tuple(formatted_row)
-                            print("\n Printing updated record:")
+                            print("\nPrinting updated record:")
                             time.sleep(1.5)           
-                            print(f"\n {resultset}")
+                            print(f"\n{resultset}")
                             
-                            print("\n Return to menu?")
+                            print("\nReturn to menu?")
                             time.sleep(.75)
                             time.sleep(.75)
-                            coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                            coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                             time.sleep(.75)
                             if coa[0] == 'y':
                                 clear()
                                 menu()
                                 options = [1, 2, 3, 4]
-                                operation = input("\n Enter function #: ")
+                                operation = input("\nEnter function #: ")
                                 time.sleep(.75)
                                 if operation == "exit":
                                     end()                      
@@ -847,15 +847,15 @@ if __name__ == '__main__':
                         
                         elif attribute not in columns:
                             clear() 
-                            print("\n Table field enter does not exist.")  
+                            print("\nTable field enter does not exist.")  
                             time.sleep(1.5)
                             end()
                             
             elif int(operation) == 3:
                 clear()
-                print("\n Selection: 3. Insert record")
+                print("\nSelection: 3. Insert record")
                 time.sleep(.75)
-                print("\n Select table:")
+                print("\nSelect table:")
                 query ="""
                 select  --*,
                         table_name
@@ -864,7 +864,7 @@ if __name__ == '__main__':
                         and table_schema = 'public'
                         and table_name not like '%book_authors%';
                 """
-                print("\n Querying database tables...")
+                print("\nQuerying database tables...")
                 cur.execute(query)
                 resultset = cur.fetchall()
                 
@@ -873,13 +873,13 @@ if __name__ == '__main__':
                     rowx = ''.join(row)
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
-                print("\n Printing tables: \n")
+                print("\nPrinting tables: \n")
                 time.sleep(1.5)
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                  
-                ioperation = input("\n Enter table: ")
+                ioperation = input("\nEnter table: ")
                 time.sleep(.75)
                 if ioperation == "exit":
                     end()
@@ -932,7 +932,7 @@ if __name__ == '__main__':
                         tsFields.append(fieldx)
 
                     clear()
-                    print(f"\n Querying database for fields and datatypes in {ioperation} ...")
+                    print(f"\nQuerying database for fields and datatypes in {ioperation} ...")
                     query = f"""
                             select 	column_name, data_type
                             from 	information_schema.columns
@@ -982,8 +982,8 @@ if __name__ == '__main__':
                         counter = counter + 1 
                         if ((fieldx not in tsFields) and (fieldx not in dateFields) and (fieldx.find('modified') < 0) and (fieldx.find('created') < 0)) or (fieldx in dateFields2):
                             if fieldx in dateFields2:
-                                print(f"\n {fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
-                                fieldValue = input(f"\n Provide value formatted as 'YYYY-MM-DD' for field '{fieldx}' : ")
+                                print(f"\n{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
+                                fieldValue = input(f"\nProvide value formatted as 'YYYY-MM-DD' for field '{fieldx}' : ")
                                 time.sleep(.75)
                             if fieldx == 'id':
                                 query = f'select max({fieldx}) from {ioperation};'
@@ -992,11 +992,11 @@ if __name__ == '__main__':
                                 newID = str(resultset)
                                 newID = newID.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                                 fieldValue = str(int(newID) + 1)
-                                print(f"\n Record ID is {fieldValue} ")
+                                print(f"\nRecord ID is {fieldValue} ")
                                 confirmQuery = f'''select * from {ioperation} where {fieldx} = {fieldValue}'''
                             if (fieldx not in dateFields2) and (fieldx != 'id'):
-                                print(f"\n {fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
-                                fieldValue = input(f"\n Provide value for field '{fieldx}' : ")
+                                print(f"\n{fieldx.capitalize()} field has datatype '{datatypes.get(fieldx)}'")
+                                fieldValue = input(f"\nProvide value for field '{fieldx}' : ")
                                 time.sleep(.75)
                         if ((fieldx == 'modified_staff_id') or (fieldx == 'created_staff_id')):
                             fieldValue = '999'
@@ -1031,9 +1031,9 @@ if __name__ == '__main__':
                     cur.execute(insertQuery)
                     conn.commit()
                     clear()
-                    print("\n Creating record...")
+                    print("\nCreating record...")
                     time.sleep(1.5)
-                    print("\n Querying new record...")
+                    print("\nQuerying new record...")
                     time.sleep(1.5)
                     clear()
                     cur.execute(confirmQuery)
@@ -1044,19 +1044,19 @@ if __name__ == '__main__':
                             if isinstance(item, datetime):
                                 formatted_row[i] = item.strftime('%Y-%m-%d %H:%M:%S')
                         resultset = tuple(formatted_row)
-                    print("\n Printing new record:")    
+                    print("\nPrinting new record:")    
                     time.sleep(1.5)      
-                    print(f"\n {resultset}")
+                    print(f"\n{resultset}")
                     time.sleep(1.5)
                     
-                    print("\n Return to menu?")
+                    print("\nReturn to menu?")
                     time.sleep(.75)
-                    coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                    coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                     time.sleep(.75)
                     if coa[0] == 'y':
                         menu()
                         options = [1, 2, 3, 4]
-                        operation = input("\n Enter function #: ")
+                        operation = input("\nEnter function #: ")
                         time.sleep(.25)
                         if operation == "exit":
                             end()                      
@@ -1070,9 +1070,9 @@ if __name__ == '__main__':
                             
             elif int(operation) == 4:
                 clear()
-                print("\n Selection: 4. Delete record")
+                print("\nSelection: 4. Delete record")
                 time.sleep(.75)
-                print("\n Querying database...")
+                print("\nQuerying database...")
                 time.sleep(1.5)
                 clear()
                 query ="""
@@ -1091,19 +1091,19 @@ if __name__ == '__main__':
                     rowx = rowx.replace("'","").replace(",","").replace(")","").replace("(","").strip()
                     tables.append(rowx)
                 
-                print("\n Printing tables: \n")
+                print("\nPrinting tables: \n")
                 time.sleep(1.5)
                 for table in tables:
                     print(table)
                     time.sleep(.25)
                     
-                doperation = input("\n Enter table: ")
+                doperation = input("\nEnter table: ")
                 time.sleep(.75)
                 if doperation == "exit":
                     end()
                 elif doperation.isdigit() == False and doperation.lower() in tables:
                     clear()
-                    print("\n Querying database for table definition...")
+                    print("\nQuerying database for table definition...")
                     query = f"""
                     select  string_agg(column_name, ' , ') as column_string
                     from 	information_schema.columns
@@ -1119,18 +1119,18 @@ if __name__ == '__main__':
                     query = f"select * from {doperation.lower()};"
                     cur.execute(query)
                     resultset2 = cur.fetchall()
-                    print(f"\n Printing '{doperation}' table records:")
+                    print(f"\nPrinting '{doperation}' table records:")
                     time.sleep(1.5)
-                    print(f"\n {resultset_mod}")
+                    print(f"\n{resultset_mod}")
                     ouput_dt_convert(resultset2)
-                    print(f"\n {resultset_mod}") 
+                    print(f"\n{resultset_mod}") 
                         
                     
-                    print("\n Unique identifier (id) of record to be deleted required.")
+                    print("\nUnique identifier (id) of record to be deleted required.")
                     time.sleep(.75)
-                    print("\n Enter 'exit' to exit utility")
+                    print("\nEnter 'exit' to exit utility")
                     time.sleep(.75)
-                    pkey = input("\n Enter id: ")
+                    pkey = input("\nEnter id: ")
                     time.sleep(.75)
                     if pkey == "exit":
                         end()
@@ -1142,11 +1142,11 @@ if __name__ == '__main__':
                                 where id = {pkey};"""
                         cur.execute(query)
                         conn.commit()
-                        print("\n Deleting record...")
+                        print("\nDeleting record...")
                         time.sleep(1.5) 
                         
                         # print(f"Database message: {resultset}")
-                        print("\n Querying table records...")
+                        print("\nQuerying table records...")
                         time.sleep(1.5)
                         clear()
                         query = f"""select * from {doperation} 
@@ -1154,18 +1154,18 @@ if __name__ == '__main__':
                                             and (id > ({pkey} - 5));"""
                         cur.execute(query)
                         resultset = cur.fetchall()
-                        print("\n Printing records (with id +/- 5 than deleted record id): \n")        
+                        print("\nPrinting records (with id +/- 5 than deleted record id): \n")        
                         time.sleep(1.5)   
                         ouput_dt_convert(resultset)
                         
-                        print("\n Return to menu?")
+                        print("\nReturn to menu?")
                         time.sleep(.75)
-                        coa = input("\n Enter 'y' for yes OR 'n' for exit: ").strip().casefold()
+                        coa = input("\nEnter 'y' for yes OR 'n' for exit: ").strip().casefold()
                         time.sleep(.75)
                         if coa[0] == 'y':
                             menu()
                             options = [1, 2, 3, 4]
-                            operation = input("\n Enter function #: ")
+                            operation = input("\nEnter function #: ")
                             time.sleep(.75)
                             if operation == "exit":
                                 end()                     
