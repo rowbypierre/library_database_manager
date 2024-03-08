@@ -64,7 +64,7 @@ if __name__ == '__main__':
     cur.execute('select version();')
     db_version = cur.fetchone()
     db_version = str(db_version).replace("'","").replace(",","").replace(")","").replace("(","").strip()
-    print(f"\n PostgreSQL version: {db_version}")
+    print(f"\nPostgreSQL version: {db_version}")
     time.sleep(1.5)
     
     menu()

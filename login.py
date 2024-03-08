@@ -9,48 +9,48 @@ def logon():
     pthreshold = 0
 
     while status == "locked":
-        username = input("\n Enter username: ").lower().strip()
+        username = input("\nEnter username: ").lower().strip()
         time.sleep(.75)
         uthreshold += 1
         if username == xusername:
             username = username.capitalize()
-            print(f"\n Welcome {username}")
+            print(f"\nWelcome {username}")
             time.sleep(.75)
             os.system("clear")
             
             while status == "locked":
-                password = getpass("\n Enter password: ").lower().strip()
+                password = getpass("\nEnter password: ").lower().strip()
                 time.sleep(.75)
                 pthreshold += 1
                 if password == xpassword:
-                    print(f"\n Correct password entered for username: {username}")
+                    print(f"\nCorrect password entered for username: {username}")
                     time.sleep(.75)
                     status = "unlocked"
                     os.system("clear")
                 else:
                     
                     if pthreshold == 9:
-                        print("\n Last attempt before program terminates.")
+                        print("\nLast attempt before program terminates.")
                         time.sleep(.75)
                         os.system("clear")
                     if pthreshold in range (1, 8):
-                        print("\n Incorrect password entered for: " + username)
+                        print("\nIncorrect password entered for: " + username)
                         time.sleep(.75)
                         os.system("clear")
                     elif pthreshold == 10:
-                        print("\n Terminating program...")
+                        print("\nTerminating program...")
                         os.system("clear")
                         sys.exit()
                         
         else: 
-            print("\n Incorrect username entered.")
+            print("\nIncorrect username entered.")
             time.sleep(.75)
             os.system("clear")
             if uthreshold == 9:  
-                print("\n Last attempt before program terminates.")
+                print("\nLast attempt before program terminates.")
                 time.sleep(.75)
             elif (uthreshold == 10):
-                print("\n Terminating program...")
+                print("\nTerminating program...")
                 os.system("clear")
                 sys.exit()
                 
