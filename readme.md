@@ -2,7 +2,7 @@
 Library Database Manager
 
 # Demo
-[`Click here`](https://www.dropbox.com/scl/fi/6yh8vvhigw92lq5w4g9mi/library-db-manager-test-20240307.mp4?rlkey=thldokbkszewur1yuzf9qmgee&dl=0)
+[`Click here`](https://www.dropbox.com/scl/fi/saaztp8udc7jne6xhn6ax/library-db-manager-test-20240417.mp4?rlkey=jn6c16cpzmypv4bvd0uyjb0oq&dl=0)
 
 # Description
 This project provides an interactive Python script that enables end users to perform CRUD (Create, Read, Update, Delete) operations on a Library Postgres database through the terminal. It is designed to facilitate database interactions without requiring direct SQL query knowledge from the user. The script makes use of several Python files to manage database connections, user authentication, and CRUD operations in an intuitive manner.
