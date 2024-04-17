@@ -116,9 +116,9 @@ if __name__ == '__main__':
                     query = ''' 
                             select 		title "Title", isbn "ISBN", genre "Genre", condition "Condition"
                             from        books b
-                                        left join genres g on g.id = b.genre_id  
-                                        left join conditions c on c.id = b.condition_id                   
-                                        left join statuses s on s.id = b.status_id                   
+							left join 	genres g on g.id = b.genre_id  
+							left join 	conditions c on c.id = b.condition_id                   
+							left join 	statuses s on s.id = b.status_id                   
                             order by	Genre, Title;'''
                     cur.execute(query)
                     resultset = cur.fetchall()
@@ -159,7 +159,7 @@ if __name__ == '__main__':
                                         count(*) "Count",			
                                         concat((count(*) * 100/(select count(*) from books)) , '% of Books') "Percent"
                             from		books b
-                                		left join conditions c on c.id = b.condition_id        
+							left join 	conditions c on c.id = b.condition_id        
                             group by 	condition
                             order by    "Count" desc, condition;'''
                     
@@ -203,9 +203,9 @@ if __name__ == '__main__':
 						                    title as "Book Title",
 						                    concat(fname,' ', mi, '. ', lname) as "Full Name"
                                 from 		book_authors  ba
-						                    left join authors a on ba.author_id = a.id
-						                    left join books b on ba.book_id = b.id 
-						                    left join statuses s on b.status_id = s.id
+								left join 	authors a on ba.author_id = a.id
+								left join 	books b on ba.book_id = b.id 
+								left join 	statuses s on b.status_id = s.id
                                 where 		status in ('Available')
                                 group by 	"Full Name", "Book Title"
                                 order by 	"Book Title"
@@ -262,9 +262,9 @@ if __name__ == '__main__':
                                             title as "Book Title",
                                             concat(fname,' ', mi, '. ', lname) as "Full Name"
                                 from 		book_authors  ba
-                                            left join authors a on ba.author_id = a.id
-                                            left join books b on ba.book_id = b.id 
-                                            left join statuses s on b.status_id = s.id
+								left join 	authors a on ba.author_id = a.id
+								left join 	books b on ba.book_id = b.id 
+								left join 	statuses s on b.status_id = s.id
                                 where 		b.id not in (select book_id from loans)
                                 order by 	"Book Title"
                             )
@@ -322,9 +322,9 @@ if __name__ == '__main__':
 				                                else current_date
 				                            end as "Checkout Date"
 	                            from		books b
-				                            left join loans l  on b.id = l.book_id 
-				                            left join returns r on r.id = l.return_id
-				                            left join checkouts c on c.id = l.checkout_id
+								left join 	loans l  on b.id = l.book_id 
+								left join 	returns r on r.id = l.return_id
+								left join 	checkouts c on c.id = l.checkout_id
                             ) 
 
                             select 		title "Book Title",
@@ -377,10 +377,10 @@ if __name__ == '__main__':
 			                            (r.date - l.due) "Days Overdue",
 			                            concat('$',r.fine) "Fine"
 	                            from 	loans l
-			                            join checkouts c on c.id = l.checkout_id
-			                            join returns r on r.id = l.return_id
-			                            join books b on b.id = l.book_id
-			                            join patrons p on p.id = l. patron_id
+								join 	checkouts c on c.id = l.checkout_id
+								join 	returns r on r.id = l.return_id
+								join 	books b on b.id = l.book_id
+								join 	patrons p on p.id = l. patron_id
                                 )
 
 	                            select 		* 
@@ -428,9 +428,9 @@ if __name__ == '__main__':
 	                            select 	*,
 			                            (r.date - l.due) "Days Overdue"
 	                            from 	loans l
-			                            join returns r on r.id = l.return_id
-			                            join books b on b.id = l.book_id
-			                            join genres g on g.id = b.genre_id
+								join 	returns r on r.id = l.return_id
+								join 	books b on b.id = l.book_id
+								join 	genres g on g.id = b.genre_id
                             )
 
 	                            select 		genre "Genre",
@@ -478,15 +478,15 @@ if __name__ == '__main__':
                     time.sleep(1)
                     query = ''' 
                             with x as (
-                                select 	date_part('year', c.date) "Year", 
-                                        date_part('month', c.date) "Month #", 
-                                        to_char(c.date, 'Month') "Month",
-                                        date_part('month', (c.date - interval '1 month')) "Previous Month #",
-                                        count(*) as "Loans"
-                                from 	loans
-                                        join returns r on r.id = loans.return_id
-                                        join checkouts c on c.id = loans.checkout_id
-                                group by date_part('year', c.date), date_part('month', c.date), date_part('month', (c.date - interval '1 month')), to_char(c.date, 'Month')
+                                select 		date_part('year', c.date) "Year", 
+											date_part('month', c.date) "Month #", 
+											to_char(c.date, 'Month') "Month",
+											date_part('month', (c.date - interval '1 month')) "Previous Month #",
+											count(*) as "Loans"
+                                from 		loans
+								join 		returns r on r.id = loans.return_id
+								join 		checkouts c on c.id = loans.checkout_id
+                                group by 	date_part('year', c.date), date_part('month', c.date), date_part('month', (c.date - interval '1 month')), to_char(c.date, 'Month')
                                 order by	"Year", "Month #" desc
                             )
 
@@ -549,30 +549,30 @@ if __name__ == '__main__':
                                         , count(early_returns.id) "# Early Returns"
                                         , fav.genre "Favorite Genre"
                             from 		loans l
-                                        left join patrons p on l.patron_id = p.id
-                                        left join ( select 	fine, id from 	returns ) fines on fines.id = l.return_id
-                                        left join ( select 	 id, comment
-                                                    from 	returns 
-                                                    where 	comment like '%late%'
-                                                            or comment like '%damage%'
-                                                            or comment like 'lost'
-                                                            or comment like '%missing%' ) comments_neg  on comments_neg.id = l.return_id
-                                        left join ( select 	id, comment
-                                                    from 	returns 
-                                                    where 	comment not like '%late%'
-                                                            and comment not like '%damage%'
-                                                            and comment not like '%lost%'
-                                                            and comment not like '%missing%' ) comments_pos on comments_pos.id = l.return_id		
-                                        left join ( select 	id, overdue from 	returns where 	overdue = true) overdue on overdue.id = l.return_id	
-                                        left join ( select  id from returns where 	comment like '%early%' ) early_returns on early_returns.id = l.return_id	
-                                        left join ( select 	patron_id, genre		
-                                                    from		(select 	*, row_number() over(partition by patron_id, genre order by count desc) "copy"
-                                                                from 		(select 	count(*) "count", patron_id, genre
-                                                                            from 		loans l
-                                                                                        join books b on b.id = l.book_id
-                                                                                        join genres g on g.id = b.genre_id 	
-                                                                            group by 	patron_id, genre) x) y
-                                                    where 	copy = 1 )fav on fav.patron_id = l.patron_id				
+							left join 	patrons p on l.patron_id = p.id
+							left join 	(select fine, id from 	returns ) fines on fines.id = l.return_id
+							left join 	(select	id, comment
+										from 	returns 
+										where 	comment like '%late%'
+												or comment like '%damage%'
+												or comment like 'lost'
+												or comment like '%missing%' ) comments_neg  on comments_neg.id = l.return_id
+							left join  (select 	id, comment
+										from 	returns 
+										where 	comment not like '%late%'
+												and comment not like '%damage%'
+												and comment not like '%lost%'
+												and comment not like '%missing%' ) comments_pos on comments_pos.id = l.return_id		
+							left join 	(select 	id, overdue from 	returns where 	overdue = true) overdue on overdue.id = l.return_id	
+							left join 	(select  id from returns where 	comment like '%early%' ) early_returns on early_returns.id = l.return_id	
+							left join 	(select 	patron_id, genre		
+										from		(select 	*, row_number() over(partition by patron_id, genre order by count desc) "copy"
+													from 		(select 	count(*) "count", patron_id, genre
+																from 		loans l
+																join 		books b on b.id = l.book_id
+																join 		genres g on g.id = b.genre_id 	
+																group by 	patron_id, genre) x) y
+										where 	copy = 1 )fav on fav.patron_id = l.patron_id				
                             group by  	l.patron_id, concat(p.fname, ' ', p.lname), fav.genre 
                             order by 	"Favorite Genre", "ID"; 
                             ; '''
@@ -739,8 +739,8 @@ if __name__ == '__main__':
                                     select distinct 	column_name --, data_type 
                                     from 				information_schema."columns"
                                     where 				table_catalog = 'library'
-                                                        and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
-                                                        and table_name not like '%pg%'     
+									and 				data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
+									and 				table_name not like '%pg%'     
                             """
                             cur.execute(query)
                             resultset = cur.fetchall()
@@ -754,8 +754,8 @@ if __name__ == '__main__':
                                         select distinct 	column_name --, data_type 
                                         from 				information_schema."columns"
                                         where 				table_catalog = 'library'
-                                                            and data_type like '%date%'
-                                                            and table_name = '{uoperation}';   
+										and 				data_type like '%date%'
+										and 				table_name = '{uoperation}';   
                                     """
                             cur.execute(query)
                             resultset = cur.fetchall()
@@ -769,8 +769,8 @@ if __name__ == '__main__':
                                         select distinct 	column_name --, data_type 
                                         from 				information_schema."columns"
                                         where 				table_catalog = 'library'
-                                                            and data_type like'%timestamp%'
-                                                            and table_name = '{uoperation}';   
+										and 				data_type like'%timestamp%'
+										and 				table_name = '{uoperation}';   
                                     """
                             cur.execute(query)
                             resultset = cur.fetchall()
@@ -892,8 +892,8 @@ if __name__ == '__main__':
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
-                                                    and table_name = '{ioperation}';   
+								and 				data_type in ('bigint', 'numeric', 'smallint', 'int', 'integer')
+								and 				table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset = cur.fetchall()
@@ -908,8 +908,8 @@ if __name__ == '__main__':
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and data_type like '%date%'
-                                                    and table_name = '{ioperation}';   
+								and 				data_type like '%date%'
+								and 				table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset = cur.fetchall()
@@ -923,8 +923,8 @@ if __name__ == '__main__':
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and data_type like'%timestamp%'
-                                                    and table_name = '{ioperation}';   
+								and 				data_type like'%timestamp%'
+								and 				table_name = '{ioperation}';   
                             """
                     cur.execute(query)
                     resultset = cur.fetchall()
@@ -974,7 +974,7 @@ if __name__ == '__main__':
                                 select distinct 	column_name --, data_type 
                                 from 				information_schema."columns"
                                 where 				table_catalog = 'library'
-                                                    and table_name = '{ioperation}';   
+								and 				table_name = '{ioperation}';   
                             """ 
                     cur.execute(query)
                     resultset = cur.fetchall()
@@ -1082,8 +1082,8 @@ if __name__ == '__main__':
                         table_name
                 from    information_schema.tables
                 where   table_catalog = 'library'
-                        and table_schema = 'public'
-                        and table_name not like '%book_authors%';
+				and 	table_schema = 'public'
+				and 	table_name not like '%book_authors%';
                 """
                 cur.execute(query)
                 resultset = cur.fetchall()
@@ -1151,9 +1151,10 @@ if __name__ == '__main__':
                         print("\nQuerying table records...")
                         time.sleep(1)
                         clear()
-                        query = f"""select * from {doperation} 
+                        query = f"""select 	* 
+									from 	{doperation} 
                                     where   (id < ({pkey} + 5))
-                                            and (id > ({pkey} - 5));"""
+                                    and 	(id > ({pkey} - 5));"""
                         cur.execute(query)
                         resultset = cur.fetchall()
                         print("\nPrinting records (with id +/- 5 than deleted record id): \n")        
